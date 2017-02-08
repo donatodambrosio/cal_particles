@@ -23,7 +23,6 @@ time_t start_time, end_time;
 void display(void)
 {
     CALint i, j, k;
-    CALreal state;
     CALint colore;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -49,26 +48,25 @@ void display(void)
         for (i=0; i<modello->rows; i++)
           for (j=0; j<modello->columns; j++)
           {
-            state=NODATA;
-            colore=0;
+            colore=PARTICLE_ABSENT;
             for(int w=0;w<MAX_NUMBER_OF_PARTICLES_PER_CELL;w++){
-              if(calGet3Dr(modello,Q.px[w],i,j,k)!=NODATA)
+              if(calGet3Di(modello,Q.imove[w],i,j,k)!=PARTICLE_ABSENT)
               {
-                state = calGet3Dr(modello,Q.px[w],i,j,k);
                 colore = calGet3Di(modello,Q.imove[w],i,j,k);
                 break;
               }
             }
 
 
-            if (state != NODATA)
+            if (colore != PARTICLE_ABSENT)
             {
-              if(colore==-3){
+              if(colore == PARTICLE_EDGE){
                 glColor3f(0,0,1);
               }
               else{
             	  glColor3f(1,0,0);
               }
+
               glPushMatrix();
               glTranslated(i-modello->rows/2,j-modello->columns/2,k-modello->slices/2);
               glutSolidSphere(0.5,5,3);

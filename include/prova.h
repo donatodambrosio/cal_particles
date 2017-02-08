@@ -22,14 +22,18 @@
 //Cell side for divisions
 #define CLD 1000
 
+#define MAX_NUMBER_OF_PARTICLES_PER_CELL 3
+#define NODATA -10 // No particle condition (used in px, py and pz)
+#define PARTICLE_EDGE   -3
+#define PARTICLE_ABSENT  0
+#define PARTICLE_PRESENT 1
+
 // Domain dimensions in rows, columns and layers
 #define ROWS    (int)((X)*(CLD))+1
 #define COLS    (int)((Y)*(CLD))+1
 #define LAYERS  (int)((Z)*(CLD))+1
 
 //Sottostati
-#define MAX_NUMBER_OF_PARTICLES_PER_CELL 3
-#define NODATA -10 // No particle condition (used in px, py and pz)
 
 struct Substates
 {
@@ -40,7 +44,6 @@ struct Substates
 	struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 	struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 	struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-	//struct CALSubstate3Di *numPresenti;
 };
 
 // Main objcts
@@ -57,7 +60,7 @@ void transition(struct CALModel3D*,int,int,int);
 void startModello();
 void initFunction();
 void finalizeModel();
-void setPosition(const double, const double, const double,const CALint,const int);
+void setPosition(struct CALModel3D*, const double, const double, const double,const CALint);
 void partilu();
 
 #endif /* PROVA_H_ */
