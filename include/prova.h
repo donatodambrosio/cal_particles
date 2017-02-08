@@ -47,12 +47,12 @@ struct Substates
 };
 
 // Main objcts
-extern struct CALModel3D* modello;
+extern struct CALModel3D* u_modellu;
 extern struct Substates Q;
-extern struct CALRun3D* simulazione;
+extern struct CALRun3D* a_simulazioni;
 
 // Computational steps
-#define STEPS 1
+#define STEPS 30
 #define VERBOSE
 
 // Functions
@@ -60,7 +60,7 @@ void transition(struct CALModel3D*,int,int,int);
 void startModello();
 void initFunction();
 void finalizeModel();
-void setPosition(struct CALModel3D*, const double, const double, const double,const CALint);
+void danciNaPosizioni(struct CALModel3D*, const double, const double, const double,const CALint);
 void partilu();
 
 #endif /* PROVA_H_ */

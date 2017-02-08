@@ -37,22 +37,22 @@ void display(void)
     glDisable(GL_LIGHTING);
     glPushMatrix();
     glColor3f(0,1,0);
-    glScalef(modello->rows, modello->columns, modello->slices);
+    glScalef(u_modellu->rows, u_modellu->columns, u_modellu->slices);
     //glutWireCube(1.0);
     glPopMatrix();
     // Restore lighting state variables
     glPopAttrib();
 
-    glRotatef(-70,1,0,0);
-    for (k=0; k<modello->slices; k++)
-        for (i=0; i<modello->rows; i++)
-          for (j=0; j<modello->columns; j++)
+    glRotatef(-90,1,0,0);
+    for (k=0; k<u_modellu->slices; k++)
+        for (i=0; i<u_modellu->rows; i++)
+          for (j=0; j<u_modellu->columns; j++)
           {
             colore=PARTICLE_ABSENT;
             for(int w=0;w<MAX_NUMBER_OF_PARTICLES_PER_CELL;w++){
-              if(calGet3Di(modello,Q.imove[w],i,j,k)!=PARTICLE_ABSENT)
+              if(calGet3Di(u_modellu,Q.imove[w],i,j,k)!=PARTICLE_ABSENT)
               {
-                colore = calGet3Di(modello,Q.imove[w],i,j,k);
+                colore = calGet3Di(u_modellu,Q.imove[w],i,j,k);
                 break;
               }
             }
@@ -68,7 +68,7 @@ void display(void)
               }
 
               glPushMatrix();
-              glTranslated(i-modello->rows/2,j-modello->columns/2,k-modello->slices/2);
+              glTranslated(i-u_modellu->rows/2,j-u_modellu->columns/2,k-u_modellu->slices/2);
               glutSolidSphere(0.5,5,3);
               //glutSolidCube(0.5);
               glPopMatrix();
@@ -86,10 +86,10 @@ void simulationRun(void)
     CALbyte again;
 
   //exectutes the global transition function, the steering function and check for the stop condition.
-    again = calRunCAStep3D(simulazione);
+    again = calRunCAStep3D(a_simulazioni);
 
     //simulation main loop
-    simulazione->step++;
+    a_simulazioni->step++;
 
     //check for the stop condition
     if (!again)
@@ -102,14 +102,14 @@ void simulationRun(void)
         printf("Elapsed time: %lds\n", end_time - start_time);
 
         //graphic rendering
-        printf("step: %d; \tactive cells: %d\r", simulazione->step, simulazione->ca3D->A.size_current);
+        printf("step: %d; \tactive cells: %d\r", a_simulazioni->step, a_simulazioni->ca3D->A.size_current);
         glutPostRedisplay();
         return;
     }
 
 #ifdef VERBOSE
     //graphic rendering
-    printf("step: %d; \tactive cells: %d\r", simulazione->step, simulazione->ca3D->A.size_current);
+    printf("step: %d; \tactive cells: %d\r", a_simulazioni->step, a_simulazioni->ca3D->A.size_current);
     glutPostRedisplay();
 #endif
 }
@@ -143,12 +143,12 @@ void init(void)
 void reshape(int w, int h)
 {
 	GLfloat	 lightPos[]	= { 0.0f, 0.0f, 100.0f, 1.0f };
-    int MAX = modello->rows;
+    int MAX = u_modellu->rows;
 
-    if (MAX < modello->columns)
-        MAX = modello->columns;
-    if (MAX < modello->slices)
-        MAX = modello->slices;
+    if (MAX < u_modellu->columns)
+        MAX = u_modellu->columns;
+    if (MAX < u_modellu->slices)
+        MAX = u_modellu->slices;
 
 	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
 	glMatrixMode (GL_PROJECTION);
