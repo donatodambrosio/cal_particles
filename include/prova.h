@@ -31,7 +31,7 @@
 // Domain dimensions in rows, columns and layers
 #define ROWS    (int)((X)*(CLD))+1
 #define COLS    (int)((Y)*(CLD))+1
-#define LAYERS  (int)((Z)*(CLD))+1
+#define SLICES  (int)((Z)*(CLD))+1
 
 //Sottostati
 

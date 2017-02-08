@@ -43,7 +43,7 @@ void display(void)
     // Restore lighting state variables
     glPopAttrib();
 
-
+    glRotatef(-70,1,0,0);
     for (k=0; k<modello->slices; k++)
         for (i=0; i<modello->rows; i++)
           for (j=0; j<modello->columns; j++)
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
 	partilu();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(640, 480);
+    glutInitWindowSize(1920, 1080);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow(argv[0]);
 	init();
