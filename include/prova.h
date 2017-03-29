@@ -12,26 +12,30 @@
 #define NUMBER_OF_PARTICLES 14988
 
 // Domain dimensions in m
-#define X 0.10
-#define Y 0.10
-#define Z 0.05
+#define X 0.02
+#define Y 0.02
+#define Z 0.02
 
 // Cell side  in m
-#define CL 0.001
+#define CL 0.002
 
 //Cell side for divisions
-#define CLD 1000
+#define CLD 2000
 
-#define MAX_NUMBER_OF_PARTICLES_PER_CELL 3
-#define NODATA -10 // No particle condition (used in px, py and pz)
-#define PARTICLE_EDGE   -3
+#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
+#define NODATA -9999    // No particle condition (used in px, py and pz)
+#define PARTICLE_EDGE   -1
 #define PARTICLE_ABSENT  0
 #define PARTICLE_PRESENT 1
 
 // Domain dimensions in rows, columns and layers
-#define ROWS    (int)((X)*(CLD))+1
-#define COLS    (int)((Y)*(CLD))+1
-#define SLICES  (int)((Z)*(CLD))+1
+#define ROWS    (int)((X)/(CL))
+#define COLS    (int)((Y)/(CL))
+#define SLICES  (int)((Z)/(CL))
+
+// Particles are randomly distributed on the 20% top layers
+#define TOP_LAYERS      0.2 * (SLICES)
+#define CELL_FILL_RATE  0.5 * (MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 //Sottostati
 
