@@ -1,5 +1,6 @@
-#include "prova.h"
-#include "parser.h"
+#include <boundary.h>
+#include <init.h>
+#include <model.h>
 
 struct CALModel3D* u_modellu;
 struct CALRun3D* a_simulazioni;
@@ -29,9 +30,6 @@ void movili(struct CALModel3D* ca, int i, int j, int k)
             z = calGet3Dr(ca, Q.pz[c],i,j,k);
             z_new = z + delta_z;
             calSet3Dr(ca, Q.pz[c],i,j,k,z_new);
-
-            //            CALreal z_new_test = calGetNext3Dr(ca,Q.pz[c],i,j,k);
-            //            int a = 0;
         }
 }
 
@@ -119,30 +117,6 @@ void moviliCazzu(struct CALModel3D* ca, int i, int j, int k)
             }
 }
 
-void danciNaPosizioni(struct CALModel3D* ca, const CALreal x, const CALreal y, const CALreal z,const CALint imove)
-{
-    int i = x/CL;
-    int j = y/CL;
-    int k = z/CL;
-    //int k = (SLICES -1) -  z/CL;
-
-    CALint slot = -1;
-    for (int c = 0; c < MAX_NUMBER_OF_PARTICLES_PER_CELL; c++)
-        if (calGet3Di(ca,Q.imove[c],i,j,k) == PARTICLE_ABSENT)
-        {
-            slot = c;
-            break;
-        }
-
-    if(slot != -1)
-    {
-        calInit3Dr(ca,Q.px[slot],   i,j,k,x    );
-        calInit3Dr(ca,Q.py[slot],   i,j,k,y    );
-        calInit3Dr(ca,Q.pz[slot],   i,j,k,z    );
-        calInit3Di(ca,Q.imove[slot],i,j,k,imove);
-    }
-}
-
 CALbyte caminalu(struct CALModel3D* modello)
 {
     CALint step = a_simulazioni->step;
@@ -153,84 +127,16 @@ CALbyte caminalu(struct CALModel3D* modello)
     return CAL_TRUE;
 }
 
-void stampaAPosizioni(struct CALModel3D* ca, int i, int j, int k)
-{
-    CALreal z = 0;
-    if (k == 10)
-        for (int c=0; c<MAX_NUMBER_OF_PARTICLES_PER_CELL; c++)
-        {
-            z = calGet3Dr(ca,Q.pz[0],i,j,k);
-            if (z != NODATA)
-                printf ("[(i,j,k),[c],z]=[(%d,%d,%d),[%d],%f]\n", i,j,k,c,z);
-        }
-}
-
-void sbacanta(struct CALModel3D* ca, int i, int j, int k)
-{
-    if (ncestiArmenuNaParticella(ca, i, j, k, 0))
-        for (int slot = 0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-            pezziala(slot, ca, i, j, k);
-}
 
 void transizioniGlobali(struct CALModel3D* modello)
 {
     calApplyElementaryProcess3D(modello,movili);
     calUpdate3D(modello);
 
-    //    printf("z(25,25,25) = %f\n", calGet3Dr(modello,Q.pz[0],25,25,25));
-    //    for (int n=0; n<modello->sizeof_X; n++)
-    //        printf("z(25,25,24; %d) = %f\n", n, calGetX3Dr(modello,Q.pz[0],25,25,24,n));
-
     calApplyElementaryProcess3D(modello,moviliCazzu);
     calUpdate3D(modello);
 }
 
-
-void boundary_cells(struct CALModel3D* ca, int i, int j, int k)
-{
-    if (i==0 || i==ROWS-1 || j==0 || j==COLS-1 || k==0 || k==SLICES-1)
-        for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-        {
-            calSet3Dr(ca, Q.px[slot],i,j,k,NODATA);
-            calSet3Dr(ca, Q.py[slot],i,j,k,NODATA);
-            calSet3Dr(ca, Q.pz[slot],i,j,k,NODATA);
-            calSet3Dr(ca, Q.vx[slot],i,j,k,NODATA);
-            calSet3Dr(ca, Q.vy[slot],i,j,k,NODATA);
-            calSet3Dr(ca, Q.vz[slot],i,j,k,NODATA);
-            calSet3Di(ca, Q.imove[slot],i,j,k,PARTICLE_EDGE);
-        }
-}
-
-void mmiscali_nta_cella(struct CALModel3D* ca, int i, int j, int k)
-{
-    if (k > TOP_LAYERS && calGet3Di(ca, Q.imove[0],i,j,k) != PARTICLE_EDGE)
-        return;
-
-    CALreal c;
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-    {
-        c = rand()/RAND_MAX; // 0 <= c <= 1
-        if (c < CELL_FILL_RATE)
-        {
-
-            CALreal cx = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
-            CALreal cy = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
-            CALreal cz = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
-
-            CALreal x = CL * (j + cx);
-            CALreal y = CL * (ROWS-1-i + cy);
-            CALreal z = CL * (SLICES-1-k + cz);
-
-            calSet3Dr(ca, Q.px[slot],i,j,k,x);
-            calSet3Dr(ca, Q.py[slot],i,j,k,y);
-            calSet3Dr(ca, Q.pz[slot],i,j,k,z);
-            calSet3Dr(ca, Q.vx[slot],i,j,k,0.0);
-            calSet3Dr(ca, Q.vy[slot],i,j,k,0.0);
-            calSet3Dr(ca, Q.vz[slot],i,j,k,0.0);
-            calSet3Di(ca, Q.imove[slot],i,j,k,PARTICLE_PRESENT);
-        }
-    }
-}
 
 void partilu()
 {
@@ -264,22 +170,7 @@ void partilu()
     calApplyElementaryProcess3D(u_modellu, mmiscali_nta_cella);
     calUpdate3D(u_modellu);
 
-    //    particellaT particelle[NUMBER_OF_PARTICLES];
-    //    parse(particelle);
-    //    for(int i=0;i<NUMBER_OF_PARTICLES;i++)
-    //        danciNaPosizioni(u_modellu, particelle[i].posizione[0],particelle[i].posizione[1],particelle[i].posizione[2],particelle[i].imove);
-
-    // calApplyElementaryProcess3D(modello, printPos);
-
-    // calApplyElementaryProcess3D(modello, sbacanta);
-    // calUpdate3D(modello);
-
-    // setPosition(modello, 0.000, 0.000, 0.000, PARTICLE_PRESENT);
-    // setPosition(modello, 0.000, 0.000, 0.050, PARTICLE_PRESENT);
-    // setPosition(modello, 0.025, 0.025, 0.025, PARTICLE_PRESENT);
-    // setPosition(modello, 0.025, 0.025, 0.026, PARTICLE_PRESENT);
-    calUpdate3D(u_modellu);
-
+    // Simulation
     a_simulazioni = calRunDef3D(u_modellu,1,CAL_RUN_LOOP,CAL_UPDATE_IMPLICIT);
     calRunAddGlobalTransitionFunc3D(a_simulazioni, transizioniGlobali);
     calRunAddStopConditionFunc3D(a_simulazioni, caminalu);

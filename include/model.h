@@ -1,5 +1,5 @@
-#ifndef PROVA_H_
-#define PROVA_H_
+#ifndef MODEL_H
+#define MODEL_H
 
 #include <OpenCAL/cal3D.h>
 #include <OpenCAL/cal3DRun.h>
@@ -60,11 +60,6 @@ extern struct CALRun3D* a_simulazioni;
 #define VERBOSE
 
 // Functions
-void transition(struct CALModel3D*,int,int,int);
-void startModello();
-void initFunction();
-void finalizeModel();
-void danciNaPosizioni(struct CALModel3D*, const double, const double, const double,const CALint);
 void partilu();
 
 #endif /* PROVA_H_ */

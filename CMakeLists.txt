@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-Project(cal_particelle_giuseppi)
+Project(cal_DEM)
 
 find_package(OpenCAL 1.0 COMPONENTS  OpenCAL  REQUIRED)
 #find_package(Boost COMPONENTS date_time REQUIRED)
