@@ -5,7 +5,7 @@
 
 void mmiscali_nta_cella(struct CALModel3D* ca, int i, int j, int k)
 {
-    if (k > TOP_LAYERS && calGet3Di(ca, Q.imove[0],i,j,k) != PARTICLE_EDGE)
+    if ((SLICES-1-k) > TOP_LAYERS || calGet3Di(ca, Q.imove[0],i,j,k) == PARTICLE_BORDER)
         return;
 
     CALreal c;

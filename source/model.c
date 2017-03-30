@@ -35,9 +35,9 @@ void movili(struct CALModel3D* ca, int i, int j, int k)
 
 void pezziala(int slot, struct CALModel3D* ca, int i, int j, int k)
 {
-    calSet3Dr(ca, Q.px[slot],   i,j,k,NODATA);
-    calSet3Dr(ca, Q.py[slot],   i,j,k,NODATA);
-    calSet3Dr(ca, Q.pz[slot],   i,j,k,NODATA);
+    calSet3Dr(ca, Q.px[slot],   i,j,k,PARTICLE_NODATA);
+    calSet3Dr(ca, Q.py[slot],   i,j,k,PARTICLE_NODATA);
+    calSet3Dr(ca, Q.pz[slot],   i,j,k,PARTICLE_NODATA);
     calSet3Dr(ca, Q.vx[slot],   i,j,k,0);
     calSet3Dr(ca, Q.vy[slot],   i,j,k,0);
     calSet3Dr(ca, Q.vz[slot],   i,j,k,0);
@@ -153,9 +153,9 @@ void partilu()
         Q.vz[i]    = calAddSubstate3Dr(u_modellu);
         Q.imove[i] = calAddSubstate3Di(u_modellu);
 
-        calInitSubstate3Dr(u_modellu,Q.px[i],   NODATA);
-        calInitSubstate3Dr(u_modellu,Q.py[i],   NODATA);
-        calInitSubstate3Dr(u_modellu,Q.pz[i],   NODATA);
+        calInitSubstate3Dr(u_modellu,Q.px[i],   PARTICLE_NODATA);
+        calInitSubstate3Dr(u_modellu,Q.py[i],   PARTICLE_NODATA);
+        calInitSubstate3Dr(u_modellu,Q.pz[i],   PARTICLE_NODATA);
         calInitSubstate3Dr(u_modellu,Q.vx[i],   0);
         calInitSubstate3Dr(u_modellu,Q.vy[i],   0);
         calInitSubstate3Dr(u_modellu,Q.vz[i],   0);

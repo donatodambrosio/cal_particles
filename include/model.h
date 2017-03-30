@@ -9,8 +9,6 @@
 #include <stdlib.h>
 
 
-#define NUMBER_OF_PARTICLES 14988
-
 // Domain dimensions in m
 #define X 0.02
 #define Y 0.02
@@ -19,19 +17,18 @@
 // Cell side  in m
 #define CL 0.002
 
-//Cell side for divisions
-#define CLD 2000
-
-#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
-#define NODATA -9999    // No particle condition (used in px, py and pz)
-#define PARTICLE_EDGE   -1
-#define PARTICLE_ABSENT  0
-#define PARTICLE_PRESENT 1
-
 // Domain dimensions in rows, columns and layers
 #define ROWS    (int)((X)/(CL))
 #define COLS    (int)((Y)/(CL))
 #define SLICES  (int)((Z)/(CL))
+
+
+#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
+#define PARTICLE_NODATA -9999    // No particle condition (used in px, py and pz)
+#define PARTICLE_BORDER -1
+#define PARTICLE_ABSENT  0
+#define PARTICLE_PRESENT 1
+
 
 // Particles are randomly distributed on the 20% top layers
 #define TOP_LAYERS      0.2 * (SLICES)
