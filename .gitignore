@@ -35,3 +35,4 @@
 # Hidden and backup files
 *~
 *.user
+*.autosave

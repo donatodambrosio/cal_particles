@@ -9,6 +9,12 @@
 #include <time.h>
 
 
+struct ViewPort{
+  int w; // width
+  int h; // height
+};
+struct ViewPort wp;
+
 struct ModelView{
     GLfloat x_rot;
     GLfloat y_rot;
@@ -18,19 +24,33 @@ struct ModelView{
 struct ModelView model_view;
 time_t start_time, end_time;
 
+void drawAxes()
+{
+  glBegin(GL_LINES);
 
-void display(void)
+  glColor3f(1.0, 0.0, 0.0);
+  glVertex3f(0.0, 0.0, 0.0);
+  glVertex3f(1.0, 0.0, 0.0);
+
+  glColor3f(0.0, 1.0, 0.0);
+  glVertex3f(0.0, 0.0, 0.0);
+  glVertex3f(0.0, 1.0, 0.0);
+
+  glColor3f(0.0, 0.0, 1.0);
+  glVertex3f(0.0, 0.0, 0.0);
+  glVertex3f(0.0, 0.0, 1.0);
+
+  glEnd();
+}
+
+
+void drawParticles()
 {
     CALint i, j, k;
     CALint color;
     float particle_size = 1.0/MAX_NUMBER_OF_PARTICLES_PER_CELL;
     float px, py, pz,
            x,  y,  z;
-
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glPushMatrix();
 
     glTranslatef(0, 0, model_view.z_trans);
     glRotatef(model_view.x_rot, 1, 0, 0);
@@ -60,7 +80,7 @@ void display(void)
                 {
                     for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
                         if(calGet3Di(u_modellu,Q.imove[slot],i,j,k)!=PARTICLE_ABSENT)
-                        {                         
+                        {
                             px = calGet3Dr(u_modellu,Q.px[slot],i,j,k) / CELL_SIDE;
                             py = calGet3Dr(u_modellu,Q.py[slot],i,j,k) / CELL_SIDE;
                             pz = calGet3Dr(u_modellu,Q.pz[slot],i,j,k) / CELL_SIDE;
@@ -69,7 +89,7 @@ void display(void)
                             y = ROWS-1  -py;
                             z = SLICES-1-pz;
 
-                            glPushMatrix();                               
+                            glPushMatrix();
                                 glTranslated(-(COLS)/2,-(ROWS)/2 + 1, -(SLICES)/2+1);
                                 glTranslated(x,y,z);
                                 glutSolidSphere(particle_size,5,5);
@@ -77,7 +97,53 @@ void display(void)
                         }
                 }
 
+}
+
+void display(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // particles
+    GLfloat	 lightPos[]	= { 0.0f, 0.0f, 100.0f, 1.0f };
+    int MAX = u_modellu->rows;
+
+    if (MAX < u_modellu->columns)
+        MAX = u_modellu->columns;
+    if (MAX < u_modellu->slices)
+        MAX = u_modellu->slices;
+
+    glViewport (0, 0, (GLsizei)wp.w, (GLsizei)wp.h);
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
+    gluPerspective(45.0, (GLfloat) wp.w/(GLfloat) wp.h, 1.0, 4*MAX);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glPushMatrix();
+        drawParticles();
     glPopMatrix();
+
+    // axes
+    glViewport (0, 0,200, 200);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, 1.0, 1.0, 10);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt (0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    lightPos[2] = 2*MAX;
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+    glPushMatrix();
+        glPushAttrib(GL_LIGHTING_BIT);
+        glDisable(GL_LIGHTING);
+        glRotatef(model_view.y_rot, 0, 1, 0);
+        glRotatef(model_view.x_rot, 1, 0, 0);
+        drawAxes();
+        glPopAttrib();
+    glPopMatrix();
+
     glutSwapBuffers();
 }
 
@@ -144,24 +210,27 @@ void init(void)
 
 void reshape(int w, int h)
 {
-    GLfloat	 lightPos[]	= { 0.0f, 0.0f, 100.0f, 1.0f };
-    int MAX = u_modellu->rows;
+    wp.w = w;
+    wp.h = h;
 
-    if (MAX < u_modellu->columns)
-        MAX = u_modellu->columns;
-    if (MAX < u_modellu->slices)
-        MAX = u_modellu->slices;
+//    GLfloat	 lightPos[]	= { 0.0f, 0.0f, 100.0f, 1.0f };
+//    int MAX = u_modellu->rows;
 
-    glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    gluPerspective(45.0, (GLfloat) w/(GLfloat) h, 1.0, 4*MAX);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+//    if (MAX < u_modellu->columns)
+//        MAX = u_modellu->columns;
+//    if (MAX < u_modellu->slices)
+//        MAX = u_modellu->slices;
 
-    lightPos[2] = 2*MAX;
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+//    glViewport (0, 0, (GLsizei) w, (GLsizei) h);
+//    glMatrixMode (GL_PROJECTION);
+//    glLoadIdentity ();
+//    gluPerspective(45.0, (GLfloat) w/(GLfloat) h, 1.0, 4*MAX);
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+//    lightPos[2] = 2*MAX;
+//    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 }
 
 void mouse(int button, int state, int x, int y)
