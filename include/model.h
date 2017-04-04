@@ -15,12 +15,12 @@
 #define Z 0.02
 
 // Cell side  in m
-#define CL 0.002
+#define CELL_SIDE 0.002
 
 // Domain dimensions in rows, columns and layers
-#define ROWS    (int)((X)/(CL))
-#define COLS    (int)((Y)/(CL))
-#define SLICES  (int)((Z)/(CL))
+#define ROWS    (int)((X)/(CELL_SIDE))
+#define COLS    (int)((Y)/(CELL_SIDE))
+#define SLICES  (int)((Z)/(CELL_SIDE))
 
 
 #define MAX_NUMBER_OF_PARTICLES_PER_CELL 10

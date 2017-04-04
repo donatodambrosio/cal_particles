@@ -6,7 +6,7 @@
 *-Debug
 *-Default
 *-Release
-cal_particelle_giuseppi
+*cal_DEM
 
 # Precompiled Headers
 *.gch

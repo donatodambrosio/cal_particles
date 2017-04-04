@@ -22,64 +22,59 @@ time_t start_time, end_time;
 void display(void)
 {
     CALint i, j, k;
-    CALint colore;
+    CALint color;
     float particle_size = 1.0/MAX_NUMBER_OF_PARTICLES_PER_CELL;
+    float px, py, pz,
+           x,  y,  z;
+
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glPushMatrix();
 
     glTranslatef(0, 0, model_view.z_trans);
     glRotatef(model_view.x_rot, 1, 0, 0);
     glRotatef(model_view.y_rot, 0, 1, 0);
-
-    // Save the lighting state variables
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
-    glPushMatrix();
-    glColor3f(0,1,0);
-    glScalef(u_modellu->rows, u_modellu->columns, u_modellu->slices);
-    //glutWireCube(1.0);
-    glPopMatrix();
-    // Restore lighting state variables
-    glPopAttrib();
-
     glRotatef(-90,1,0,0);
+
     glPushMatrix();
-    float scale_x = COLS-2;
-    float scale_y = ROWS-2;
-    float scale_z = SLICES-2;
-    glScalef(scale_x,scale_y,scale_z);
-    glTranslatef(-particle_size/2,particle_size/2,-particle_size/2);
-    glutWireCube(1.0);
+        float scale_x = COLS-2;
+        float scale_y = ROWS-2;
+        float scale_z = SLICES-2;
+        glScalef(scale_x,scale_y,scale_z);
+        glPushAttrib(GL_LIGHTING_BIT);
+            glDisable(GL_LIGHTING);
+            glColor3f(1,1,1);
+            glutWireCube(1.0);
+        glPopAttrib();
+
     glPopMatrix();
+
+
+    glColor3f(1,0,0);
+
     for (k=0; k<u_modellu->slices; k++)
         for (i=0; i<u_modellu->rows; i++)
             for (j=0; j<u_modellu->columns; j++)
-                if (calGet3Di(u_modellu,Q.imove[0],i,j,k)!=PARTICLE_BORDER)
+                if (calGet3Di(u_modellu,Q.imove[0],i,j,k) != PARTICLE_BORDER)
                 {
-                    colore=PARTICLE_ABSENT;
-                    for(int w=0;w<MAX_NUMBER_OF_PARTICLES_PER_CELL;w++){
-                        if(calGet3Di(u_modellu,Q.imove[w],i,j,k)!=PARTICLE_ABSENT)
-                        {
-                            colore = calGet3Di(u_modellu,Q.imove[w],i,j,k);
+                    for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
+                        if(calGet3Di(u_modellu,Q.imove[slot],i,j,k)!=PARTICLE_ABSENT)
+                        {                         
+                            px = calGet3Dr(u_modellu,Q.px[slot],i,j,k) / CELL_SIDE;
+                            py = calGet3Dr(u_modellu,Q.py[slot],i,j,k) / CELL_SIDE;
+                            pz = calGet3Dr(u_modellu,Q.pz[slot],i,j,k) / CELL_SIDE;
 
-                            if (colore != PARTICLE_ABSENT)
-                            {
-                                if(colore == PARTICLE_BORDER){
-                                    glColor3f(0,0,1);
-                                }
-                                else{
-                                    glColor3f(1,0,0);
-                                }
+                            x =          px;
+                            y = ROWS-1  -py;
+                            z = SLICES-1-pz;
 
-                                glPushMatrix();
-                                glTranslated(i-u_modellu->rows/2,j-u_modellu->columns/2,k-u_modellu->slices/2);
+                            glPushMatrix();                               
+                                glTranslated(-(COLS)/2,-(ROWS)/2 + 1, -(SLICES)/2+1);
+                                glTranslated(x,y,z);
                                 glutSolidSphere(particle_size,5,5);
-                                glPopMatrix();
-                            }
+                            glPopMatrix();
                         }
-                    }
-
                 }
 
     glPopMatrix();

@@ -19,9 +19,9 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int i, int j, int k)
             CALreal cy = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
             CALreal cz = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
 
-            CALreal x = CL * (j + cx);
-            CALreal y = CL * (ROWS-1-i + cy);
-            CALreal z = CL * (SLICES-1-k + cz);
+            CALreal x = CELL_SIDE * (j + cx);
+            CALreal y = CELL_SIDE * (ROWS-1-i + cy);
+            CALreal z = CELL_SIDE * (SLICES-1-k + cz);
 
             calSet3Dr(ca, Q.px[slot],i,j,k,x);
             calSet3Dr(ca, Q.py[slot],i,j,k,y);

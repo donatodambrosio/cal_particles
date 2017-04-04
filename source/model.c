@@ -20,7 +20,7 @@ void movili(struct CALModel3D* ca, int i, int j, int k)
     if (!ncestiArmenuNaParticella(ca, i, j, k, 0))
         return;
 
-    CALreal delta_z = -CL/3;
+    CALreal delta_z = -CELL_SIDE/3;
     CALreal z;
     CALreal z_new;
 
@@ -75,9 +75,9 @@ void moviliCazzu(struct CALModel3D* ca, int i, int j, int k)
                 y = calGet3Dr(ca, Q.py[slot],i,j,k);
                 z = calGet3Dr(ca, Q.pz[slot],i,j,k);
 
-                _i = x/CL;
-                _j = y/CL;
-                _k = z/CL;
+                _i = x/CELL_SIDE;
+                _j = y/CELL_SIDE;
+                _k = z/CELL_SIDE;
 
                 if ((i != _i) || (j != _j) || (k != _k))
                     pezziala(slot, ca,i,j,k);
@@ -93,9 +93,9 @@ void moviliCazzu(struct CALModel3D* ca, int i, int j, int k)
                 y = calGetX3Dr(ca, Q.py[slot],i,j,k,n);
                 z = calGetX3Dr(ca, Q.pz[slot],i,j,k,n);
 
-                _i = x/CL;
-                _j = y/CL;
-                _k = z/CL;
+                _i = x/CELL_SIDE;
+                _j = y/CELL_SIDE;
+                _k = z/CELL_SIDE;
 
                 int a;
                 if (i==25 && j==25 && k==24 && n==18 && slot==0)
