@@ -28,7 +28,7 @@ void movili(struct CALModel3D* ca, int i, int j, int k)
         if (calGet3Di(ca, Q.imove[c],i,j,k) == PARTICLE_PRESENT)
         {
             z = calGet3Dr(ca, Q.pz[c],i,j,k);
-            z_new = z + delta_z;
+            z_new = z - delta_z;
             calSet3Dr(ca, Q.pz[c],i,j,k,z_new);
         }
 }

@@ -6,6 +6,7 @@
 #include <model.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 
@@ -43,20 +44,15 @@ void drawAxes()
   glEnd();
 }
 
-
 void drawParticles()
 {
     CALint i, j, k;
-    CALint color;
     float particle_size = 1.0/MAX_NUMBER_OF_PARTICLES_PER_CELL;
     float px, py, pz,
            x,  y,  z;
 
-    glTranslatef(0, 0, model_view.z_trans);
-    glRotatef(model_view.x_rot, 1, 0, 0);
-    glRotatef(model_view.y_rot, 0, 1, 0);
-    glRotatef(-90,1,0,0);
-
+    // Box
+    glColor3f(1,1,1);
     glPushMatrix();
         float scale_x = COLS-2;
         float scale_y = ROWS-2;
@@ -64,15 +60,12 @@ void drawParticles()
         glScalef(scale_x,scale_y,scale_z);
         glPushAttrib(GL_LIGHTING_BIT);
             glDisable(GL_LIGHTING);
-            glColor3f(1,1,1);
             glutWireCube(1.0);
         glPopAttrib();
-
     glPopMatrix();
 
-
+    // Particles
     glColor3f(1,0,0);
-
     for (k=0; k<u_modellu->slices; k++)
         for (i=0; i<u_modellu->rows; i++)
             for (j=0; j<u_modellu->columns; j++)
@@ -120,6 +113,10 @@ void display(void)
     glLoadIdentity();
     gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glPushMatrix();
+    glTranslatef(0, 0, model_view.z_trans);
+        glRotatef(model_view.x_rot, 1, 0, 0);
+        glRotatef(model_view.y_rot, 0, 1, 0);
+        glRotatef(-90,1,0,0);
         drawParticles();
     glPopMatrix();
 
@@ -138,8 +135,9 @@ void display(void)
     glPushMatrix();
         glPushAttrib(GL_LIGHTING_BIT);
         glDisable(GL_LIGHTING);
-        glRotatef(model_view.y_rot, 0, 1, 0);
         glRotatef(model_view.x_rot, 1, 0, 0);
+        glRotatef(model_view.y_rot, 0, 1, 0);
+        glRotatef(-90,1,0,0);
         drawAxes();
         glPopAttrib();
     glPopMatrix();
@@ -180,6 +178,14 @@ void simulationRun(void)
 
     //simulation main loop
     a_simulazioni->step++;
+
+
+    char winwow_title[256];
+    char steps_cstr[16];
+    strcpy(winwow_title, "cal_DEM - step ");
+    sprintf(steps_cstr, "%d", a_simulazioni->step);
+    strcat(winwow_title, steps_cstr);
+    glutSetWindowTitle(winwow_title);
 }
 
 void init(void)
@@ -212,25 +218,6 @@ void reshape(int w, int h)
 {
     wp.w = w;
     wp.h = h;
-
-//    GLfloat	 lightPos[]	= { 0.0f, 0.0f, 100.0f, 1.0f };
-//    int MAX = u_modellu->rows;
-
-//    if (MAX < u_modellu->columns)
-//        MAX = u_modellu->columns;
-//    if (MAX < u_modellu->slices)
-//        MAX = u_modellu->slices;
-
-//    glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-//    glMatrixMode (GL_PROJECTION);
-//    glLoadIdentity ();
-//    gluPerspective(45.0, (GLfloat) w/(GLfloat) h, 1.0, 4*MAX);
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//    gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-//    lightPos[2] = 2*MAX;
-//    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 }
 
 void mouse(int button, int state, int x, int y)
@@ -287,7 +274,7 @@ int main(int argc, char** argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(1920, 1080);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[0]);
+    glutCreateWindow("cal_DEM");
     init();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);

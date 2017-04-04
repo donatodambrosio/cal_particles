@@ -12,14 +12,14 @@
 // Domain dimensions in m
 #define X 0.02
 #define Y 0.02
-#define Z 0.02
+#define Z 0.04
 
 // Cell side  in m
 #define CELL_SIDE 0.002
 
 // Domain dimensions in rows, columns and layers
-#define ROWS    (int)((X)/(CELL_SIDE))
-#define COLS    (int)((Y)/(CELL_SIDE))
+#define ROWS    (int)((Y)/(CELL_SIDE))
+#define COLS    (int)((X)/(CELL_SIDE))
 #define SLICES  (int)((Z)/(CELL_SIDE))
 
 
