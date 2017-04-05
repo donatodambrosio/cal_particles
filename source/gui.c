@@ -49,14 +49,14 @@ void drawParticles()
     CALint i, j, k;
     float particle_size = 1.0/MAX_NUMBER_OF_PARTICLES_PER_CELL;
     float px, py, pz,
-           x,  y,  z;
+          _j, _i, _k;
 
     // Box
     glColor3f(1,1,1);
     glPushMatrix();
-        float scale_x = COLS-2;
-        float scale_y = ROWS-2;
-        float scale_z = SLICES-2;
+        float scale_x = X_CELLS-2;
+        float scale_y = Y_CELLS-2;
+        float scale_z = Z_CELLS-2;
         glScalef(scale_x,scale_y,scale_z);
         glPushAttrib(GL_LIGHTING_BIT);
             glDisable(GL_LIGHTING);
@@ -72,19 +72,19 @@ void drawParticles()
                 if (calGet3Di(u_modellu,Q.imove[0],i,j,k) != PARTICLE_BORDER)
                 {
                     for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
-                        if(calGet3Di(u_modellu,Q.imove[slot],i,j,k)!=PARTICLE_ABSENT)
+                        if(calGet3Di(u_modellu,Q.imove[slot],i,j,k) != PARTICLE_ABSENT)
                         {
-                            px = calGet3Dr(u_modellu,Q.px[slot],i,j,k) / CELL_SIDE;
-                            py = calGet3Dr(u_modellu,Q.py[slot],i,j,k) / CELL_SIDE;
-                            pz = calGet3Dr(u_modellu,Q.pz[slot],i,j,k) / CELL_SIDE;
+                            px = calGet3Dr(u_modellu,Q.px[slot],i,j,k);
+                            py = calGet3Dr(u_modellu,Q.py[slot],i,j,k);
+                            pz = calGet3Dr(u_modellu,Q.pz[slot],i,j,k);
 
-                            x =          px;
-                            y = ROWS-1  -py;
-                            z = SLICES-1-pz;
+                            px /= CELL_SIDE;
+                            py /= CELL_SIDE;
+                            pz /= CELL_SIDE;
 
                             glPushMatrix();
-                                glTranslated(-(COLS)/2,-(ROWS)/2 + 1, -(SLICES)/2+1);
-                                glTranslated(x,y,z);
+                                glTranslatef(-X_CELLS/2, -Y_CELLS/2 , -Z_CELLS/2);
+                                glTranslatef(px,py,pz);
                                 glutSolidSphere(particle_size,5,5);
                             glPopMatrix();
                         }
@@ -113,7 +113,7 @@ void display(void)
     glLoadIdentity();
     gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glPushMatrix();
-    glTranslatef(0, 0, model_view.z_trans);
+        glTranslatef(0, 0, model_view.z_trans);
         glRotatef(model_view.x_rot, 1, 0, 0);
         glRotatef(model_view.y_rot, 0, 1, 0);
         glRotatef(-90,1,0,0);
@@ -149,6 +149,9 @@ void simulationRun(void)
 {
     CALbyte again;
 
+    //simulation main loop
+    a_simulazioni->step++;
+
     //exectutes the global transition function, the steering function and check for the stop condition.
     again = calRunCAStep3D(a_simulazioni);
 
@@ -175,9 +178,6 @@ void simulationRun(void)
     glutPostRedisplay();
 #endif
 
-
-    //simulation main loop
-    a_simulazioni->step++;
 
 
     char winwow_title[256];

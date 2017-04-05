@@ -3,9 +3,9 @@
 
 #include <model.h>
 
-void mmiscali_nta_cella(struct CALModel3D* ca, int i, int j, int k)
+void mmiscali_nta_cella(struct CALModel3D* ca, int x_cell, int y_cell, int z_cell)
 {
-    if ((SLICES-1-k) > TOP_LAYERS || calGet3Di(ca, Q.imove[0],i,j,k) == PARTICLE_BORDER)
+    if (z_cell < TOP_LAYERS || calGet3Di(ca, Q.imove[0],x_cell,y_cell,z_cell) == PARTICLE_BORDER)
         return;
 
     CALreal c;
@@ -19,17 +19,17 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int i, int j, int k)
             CALreal cy = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
             CALreal cz = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
 
-            CALreal x = CELL_SIDE * (j + cx);
-            CALreal y = CELL_SIDE * (ROWS-1-i + cy);
-            CALreal z = CELL_SIDE * (SLICES-1-k + cz);
+            CALreal px = CELL_SIDE * (x_cell + cx);
+            CALreal py = CELL_SIDE * (y_cell + cy);
+            CALreal pz = CELL_SIDE * (z_cell + cz);
 
-            calSet3Dr(ca, Q.px[slot],i,j,k,x);
-            calSet3Dr(ca, Q.py[slot],i,j,k,y);
-            calSet3Dr(ca, Q.pz[slot],i,j,k,z);
-            calSet3Dr(ca, Q.vx[slot],i,j,k,0.0);
-            calSet3Dr(ca, Q.vy[slot],i,j,k,0.0);
-            calSet3Dr(ca, Q.vz[slot],i,j,k,0.0);
-            calSet3Di(ca, Q.imove[slot],i,j,k,PARTICLE_PRESENT);
+            calSet3Dr(ca, Q.px[slot],x_cell,y_cell,z_cell,px);
+            calSet3Dr(ca, Q.py[slot],x_cell,y_cell,z_cell,py);
+            calSet3Dr(ca, Q.pz[slot],x_cell,y_cell,z_cell,pz);
+            calSet3Dr(ca, Q.vx[slot],x_cell,y_cell,z_cell,0.0);
+            calSet3Dr(ca, Q.vy[slot],x_cell,y_cell,z_cell,0.0);
+            calSet3Dr(ca, Q.vz[slot],x_cell,y_cell,z_cell,0.0);
+            calSet3Di(ca, Q.imove[slot],x_cell,y_cell,z_cell,PARTICLE_PRESENT);
         }
     }
 }
