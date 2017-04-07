@@ -9,21 +9,31 @@
 #include <stdlib.h>
 
 
+// Particle radius and volume
+#define PI 3.14159265358979
+#define PARTICLE_RADIUS (0.0005)
+#define PARTICLE_VOLUME ((4.0/3.0)*PI*PARTICLE_RADIUS*PARTICLE_RADIUS*PARTICLE_RADIUS)
+
+// Cell side [m], volume [m^3] and max occupancy volume [m^3] according to Kepler's conjecture
+#define CELL_SIDE (0.002)
+#define CELL_VOLUME (CELL_SIDE*CELL_SIDE*CELL_SIDE)
+#define KEPLER_OCCUPANCY_FACTOR (0.74)
+#define MAX_OCCUPANCY_VOLUME ((KEPLER_OCCUPANCY_FACTOR)*(CELL_VOLUME))
+
+// Max number of particles per cell according to Kepler's conjecture
+#define MAX_NUMBER_OF_PARTICLES_PER_CELL  (int)(((MAX_OCCUPANCY_VOLUME)/(PARTICLE_VOLUME))+1)
+
 // Domain dimensions in m
 #define X 0.02
 #define Y 0.02
 #define Z 0.04
-
-// Cell side  in m
-#define CELL_SIDE 0.002
 
 // Domain dimensions in cells along x, y and z directions
 #define Y_CELLS (int)((Y)/(CELL_SIDE))
 #define X_CELLS (int)((X)/(CELL_SIDE))
 #define Z_CELLS (int)((Z)/(CELL_SIDE))
 
-
-#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
+//#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
 #define PARTICLE_NODATA -9999    // No particle condition (used in px, py and pz)
 #define PARTICLE_BORDER -1
 #define PARTICLE_ABSENT  0
@@ -37,13 +47,21 @@
 //Sottostati
 struct Substates
 {
-	struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-	struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-	struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-	struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-	struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-	struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-	struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//    struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//	struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//	struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//	struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//	struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//	struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//	struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+
+    struct CALSubstate3Dr **px;
+    struct CALSubstate3Dr **py;
+    struct CALSubstate3Dr **pz;
+    struct CALSubstate3Dr **vx;
+    struct CALSubstate3Dr **vy;
+    struct CALSubstate3Dr **vz;
+    struct CALSubstate3Di **imove;
 };
 
 // Main objcts
@@ -52,7 +70,7 @@ extern struct Substates Q;
 extern struct CALRun3D* a_simulazioni;
 
 // Computational steps
-#define STEPS 10
+#define STEPS 30
 
 // Verbose mode
 #define VERBOSE

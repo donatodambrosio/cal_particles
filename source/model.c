@@ -1,5 +1,6 @@
 #include <boundary.h>
 #include <init.h>
+#include <math.h>
 #include <model.h>
 
 struct CALModel3D* u_modellu;
@@ -83,31 +84,31 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     //sucali
     for (int n=1; n<ca->sizeof_X; n++)
         if (ncestiArmenuNaParticella(ca, cell_x, cell_y, cell_z, n))
-        for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-            if (calGetX3Di(ca,Q.imove[slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
-            {
-                px = calGetX3Dr(ca, Q.px[slot],cell_x,cell_y,cell_z,n);
-                py = calGetX3Dr(ca, Q.py[slot],cell_x,cell_y,cell_z,n);
-                pz = calGetX3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z,n);
-
-                new_cell_x = px/CELL_SIDE;
-                new_cell_y = py/CELL_SIDE;
-                new_cell_z = pz/CELL_SIDE;
-
-                if ((cell_x == new_cell_x) && (cell_y == new_cell_y) && (cell_z == new_cell_z))
+            for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+                if (calGetX3Di(ca,Q.imove[slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
                 {
-                    int c;
-                    for (c = 0; c < MAX_NUMBER_OF_PARTICLES_PER_CELL; c++)
-                        if (calGetNext3Di(ca,Q.imove[c],cell_x,cell_y,cell_z) == PARTICLE_ABSENT)
-                        {
-                            slot = c;
-                            break;
-                        }
+                    px = calGetX3Dr(ca, Q.px[slot],cell_x,cell_y,cell_z,n);
+                    py = calGetX3Dr(ca, Q.py[slot],cell_x,cell_y,cell_z,n);
+                    pz = calGetX3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z,n);
 
-                    if (c < MAX_NUMBER_OF_PARTICLES_PER_CELL)
-                        sucala(c,slot,ca,cell_x,cell_y,cell_z,n);
+                    new_cell_x = px/CELL_SIDE;
+                    new_cell_y = py/CELL_SIDE;
+                    new_cell_z = pz/CELL_SIDE;
+
+                    if ((cell_x == new_cell_x) && (cell_y == new_cell_y) && (cell_z == new_cell_z))
+                    {
+                        int c;
+                        for (c = 0; c < MAX_NUMBER_OF_PARTICLES_PER_CELL; c++)
+                            if (calGetNext3Di(ca,Q.imove[c],cell_x,cell_y,cell_z) == PARTICLE_ABSENT)
+                            {
+                                slot = c;
+                                break;
+                            }
+
+                        if (c < MAX_NUMBER_OF_PARTICLES_PER_CELL)
+                            sucala(c,slot,ca,cell_x,cell_y,cell_z,n);
+                    }
                 }
-            }
 }
 
 CALbyte caminalu(struct CALModel3D* modello)
@@ -133,6 +134,14 @@ void partilu()
 {
     CALint NX = X_CELLS, NY=Y_CELLS, NZ=Z_CELLS;
     u_modellu = calCADef3D(X_CELLS,Y_CELLS,Z_CELLS,CAL_MOORE_NEIGHBORHOOD_3D,CAL_SPACE_TOROIDAL,CAL_NO_OPT);
+
+    Q.px = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.py = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.pz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.vx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.vy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.vz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.imove = (struct CALSubstate3Di**)malloc(sizeof(struct CALSubstate3Di*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
     for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
     {
