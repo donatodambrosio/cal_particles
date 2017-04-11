@@ -8,9 +8,16 @@
 #include <GL/glut.h>
 #include <stdlib.h>
 
+// ACCELERATION OF GRAVITY
+#define G 9.81
+#define AIR_VISCOSITY 1.81e-5
 
-// Particle radius and volume
+// PHYSICAL TIME
+#define DELTA_T 0.001 //[s]
+
+// Particle mass, radius and volume
 #define PI 3.14159265358979
+#define PARTICLE_MASS 0.001
 #define PARTICLE_RADIUS (0.0005)
 #define PARTICLE_VOLUME ((4.0/3.0)*PI*PARTICLE_RADIUS*PARTICLE_RADIUS*PARTICLE_RADIUS)
 
@@ -19,6 +26,9 @@
 #define CELL_VOLUME (CELL_SIDE*CELL_SIDE*CELL_SIDE)
 #define KEPLER_OCCUPANCY_FACTOR (0.74)
 #define MAX_OCCUPANCY_VOLUME ((KEPLER_OCCUPANCY_FACTOR)*(CELL_VOLUME))
+
+// max allowed velocity
+#define V_MAX 0.9*CELL_SIDE/DELTA_T
 
 // Max number of particles per cell according to Kepler's conjecture
 #define MAX_NUMBER_OF_PARTICLES_PER_CELL  (int)(((MAX_OCCUPANCY_VOLUME)/(PARTICLE_VOLUME))+1)
@@ -47,7 +57,7 @@
 //Sottostati
 struct Substates
 {
-//    struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+//  struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 //	struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 //	struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 //	struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
@@ -70,7 +80,7 @@ extern struct Substates Q;
 extern struct CALRun3D* a_simulazioni;
 
 // Computational steps
-#define STEPS 30
+#define STEPS 1000
 
 // Verbose mode
 #define VERBOSE

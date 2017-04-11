@@ -17,21 +17,66 @@ CALbyte ncestiArmenuNaParticella(struct CALModel3D* ca, int cell_x, int cell_y, 
     return CAL_FALSE;
 }
 
+void applyForce(CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CALreal* vf)
+{
+    CALreal F[3], a[3];
+
+    // F[0] =  0;
+    // F[1] =  0;
+    // F[2] = -m*G;
+
+    F[0] =  m*0 - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[0];
+    F[1] =  m*0 - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[1];
+    F[2] = -m*G - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[2];
+
+
+    a[0] = F[0]/m;
+    a[1] = F[1]/m;
+    a[2] = F[2]/m;
+
+    for (int i=0; i<3; i++)
+    {
+        vf[i] = v0[i]+a[i]*t;
+        pf[i] = p0[i] + v0[i]*t + 0.5*a[i]*t*t;
+
+        if (fabs(pf[i]-p0[i]) >= CELL_SIDE)
+        {
+            pf[i] = p0[i];
+            vf[i] = v0[i];
+        }
+    }
+}
+
 void movili(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
     if (!ncestiArmenuNaParticella(ca, cell_x, cell_y, cell_z, 0))
         return;
 
-    CALreal delta_z = -CELL_SIDE/3;
-    CALreal z;
-    CALreal z_new;
+    CALreal p0[3];
+    CALreal v0[3];
+    CALreal pf[3];
+    CALreal vf[3];
 
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
         if (calGet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
         {
-            z = calGet3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z);
-            z_new = z + delta_z;
-            calSet3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z,z_new);
+            p0[0] = pf[0] = calGet3Dr(ca, Q.px[slot],cell_x,cell_y,cell_z);
+            p0[1] = pf[1] = calGet3Dr(ca, Q.py[slot],cell_x,cell_y,cell_z);
+            p0[2] = pf[2] = calGet3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z);
+
+            v0[0] = vf[0] = calGet3Dr(ca, Q.vx[slot],cell_x,cell_y,cell_z);
+            v0[1] = vf[1] = calGet3Dr(ca, Q.vy[slot],cell_x,cell_y,cell_z);
+            v0[2] = vf[2] = calGet3Dr(ca, Q.vz[slot],cell_x,cell_y,cell_z);
+
+            applyForce(p0, v0, PARTICLE_MASS, DELTA_T, pf, vf);
+
+            calSet3Dr(ca, Q.px[slot],cell_x,cell_y,cell_z,pf[0]);
+            calSet3Dr(ca, Q.py[slot],cell_x,cell_y,cell_z,pf[1]);
+            calSet3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z,pf[2]);
+
+            calSet3Dr(ca, Q.vx[slot],cell_x,cell_y,cell_z,vf[0]);
+            calSet3Dr(ca, Q.vy[slot],cell_x,cell_y,cell_z,vf[1]);
+            calSet3Dr(ca, Q.vz[slot],cell_x,cell_y,cell_z,vf[2]);
         }
 }
 
@@ -46,19 +91,20 @@ void pezziala(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_
     calSet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z,PARTICLE_ABSENT);
 }
 
-void sucala(int slot, int e, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
+void sucala(int detination_slot, int source_sloot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
-    calSet3Dr(ca, Q.px[slot],cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.px[e],cell_x,cell_y,cell_z,n));
-    calSet3Dr(ca, Q.py[slot],cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.py[e],cell_x,cell_y,cell_z,n));
-    calSet3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.pz[e],cell_x,cell_y,cell_z,n));
-    calSet3Dr(ca, Q.vx[slot],cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vx[e],cell_x,cell_y,cell_z,n));
-    calSet3Dr(ca, Q.vy[slot],cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vy[e],cell_x,cell_y,cell_z,n));
-    calSet3Dr(ca, Q.vz[slot],cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vz[e],cell_x,cell_y,cell_z,n));
-    calSet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z,calGetX3Di(ca,Q.imove[e],cell_x,cell_y,cell_z,n));
+    calSet3Dr(ca, Q.px[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.px[source_sloot],   cell_x,cell_y,cell_z,n));
+    calSet3Dr(ca, Q.py[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.py[source_sloot],   cell_x,cell_y,cell_z,n));
+    calSet3Dr(ca, Q.pz[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.pz[source_sloot],   cell_x,cell_y,cell_z,n));
+    calSet3Dr(ca, Q.vx[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vx[source_sloot],   cell_x,cell_y,cell_z,n));
+    calSet3Dr(ca, Q.vy[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vy[source_sloot],   cell_x,cell_y,cell_z,n));
+    calSet3Dr(ca, Q.vz[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vz[source_sloot],   cell_x,cell_y,cell_z,n));
+    calSet3Di(ca, Q.imove[detination_slot],cell_x,cell_y,cell_z,calGetX3Di(ca,Q.imove[source_sloot],cell_x,cell_y,cell_z,n));
 }
 
 void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
+    CALint a = 0;
     CALreal px, py, pz;
     CALint  new_cell_x, new_cell_y, new_cell_z;
 
@@ -84,30 +130,24 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     //sucali
     for (int n=1; n<ca->sizeof_X; n++)
         if (ncestiArmenuNaParticella(ca, cell_x, cell_y, cell_z, n))
-            for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-                if (calGetX3Di(ca,Q.imove[slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
+            for (int source_slot = 0; source_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; source_slot++)
+                if (calGetX3Di(ca,Q.imove[source_slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
                 {
-                    px = calGetX3Dr(ca, Q.px[slot],cell_x,cell_y,cell_z,n);
-                    py = calGetX3Dr(ca, Q.py[slot],cell_x,cell_y,cell_z,n);
-                    pz = calGetX3Dr(ca, Q.pz[slot],cell_x,cell_y,cell_z,n);
+                    px = calGetX3Dr(ca, Q.px[source_slot],cell_x,cell_y,cell_z,n);
+                    py = calGetX3Dr(ca, Q.py[source_slot],cell_x,cell_y,cell_z,n);
+                    pz = calGetX3Dr(ca, Q.pz[source_slot],cell_x,cell_y,cell_z,n);
 
                     new_cell_x = px/CELL_SIDE;
                     new_cell_y = py/CELL_SIDE;
                     new_cell_z = pz/CELL_SIDE;
 
                     if ((cell_x == new_cell_x) && (cell_y == new_cell_y) && (cell_z == new_cell_z))
-                    {
-                        int c;
-                        for (c = 0; c < MAX_NUMBER_OF_PARTICLES_PER_CELL; c++)
-                            if (calGetNext3Di(ca,Q.imove[c],cell_x,cell_y,cell_z) == PARTICLE_ABSENT)
+                        for (int destination_slot = 0; destination_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
+                            if (calGetNext3Di(ca,Q.imove[destination_slot],cell_x,cell_y,cell_z) == PARTICLE_ABSENT)
                             {
-                                slot = c;
+                                sucala(destination_slot,source_slot,ca,cell_x,cell_y,cell_z,n);
                                 break;
-                            }
-
-                        if (c < MAX_NUMBER_OF_PARTICLES_PER_CELL)
-                            sucala(c,slot,ca,cell_x,cell_y,cell_z,n);
-                    }
+                            }                    
                 }
 }
 
