@@ -57,21 +57,21 @@
 //Sottostati
 struct Substates
 {
-//  struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-//	struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-//	struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-//	struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-//	struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-//	struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-//	struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  //  struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  //	struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  //	struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  //	struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  //	struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  //	struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  //	struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 
-    struct CALSubstate3Dr **px;
-    struct CALSubstate3Dr **py;
-    struct CALSubstate3Dr **pz;
-    struct CALSubstate3Dr **vx;
-    struct CALSubstate3Dr **vy;
-    struct CALSubstate3Dr **vz;
-    struct CALSubstate3Di **imove;
+  struct CALSubstate3Dr **px;
+  struct CALSubstate3Dr **py;
+  struct CALSubstate3Dr **pz;
+  struct CALSubstate3Dr **vx;
+  struct CALSubstate3Dr **vy;
+  struct CALSubstate3Dr **vz;
+  struct CALSubstate3Di **imove;
 };
 
 // Main objcts
