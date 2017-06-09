@@ -13,7 +13,9 @@
 #define AIR_VISCOSITY 1.81e-5
 
 // PHYSICAL TIME
-#define DELTA_T 0.001 //[s]
+//#define DELTA_T 0.001 //[s]
+#define DELTA_T 0.0001 //[s]
+
 
 // Particle mass, radius and volume
 #define PI 3.14159265358979
@@ -36,7 +38,7 @@
 // Domain dimensions in m
 #define X 0.02
 #define Y 0.02
-#define Z 0.04
+#define Z 0.02
 
 // Domain dimensions in cells along x, y and z directions
 #define Y_CELLS (int)((Y)/(CELL_SIDE))
@@ -50,8 +52,8 @@
 #define PARTICLE_PRESENT 1
 
 
-// Particles are randomly distributed on the 10% top layers
-#define TOP_LAYERS      (Z_CELLS) - 0.1 * (Z_CELLS)
+// Particles are randomly distributed on the 20% top layers
+#define TOP_LAYERS      (Z_CELLS) - 0.2 * (Z_CELLS)
 #define CELL_FILL_RATE  0.5 * (MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 //Sottostati

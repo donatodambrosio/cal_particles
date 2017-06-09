@@ -1,4 +1,5 @@
 #include <ep_boundary.h>
+#include <ep_collision.h>
 #include <ep_init.h>
 #include <ep_movili.h>
 #include <ep_movili_cazzu.h>
@@ -17,6 +18,9 @@ void transizioniGlobali(struct CALModel3D* modello)
   calUpdate3D(modello);
 
   calApplyElementaryProcess3D(modello,moviliCazzu);
+  calUpdate3D(modello);
+
+  calApplyElementaryProcess3D(modello,collision);
   calUpdate3D(modello);
 }
 
