@@ -46,7 +46,9 @@ void drawAxes()
 
 void drawParticles()
 {
-  float particle_size = 1.0/MAX_NUMBER_OF_PARTICLES_PER_CELL;
+  //float particle_size = 1.0/MAX_NUMBER_OF_PARTICLES_PER_CELL;
+  float particle_radius = PARTICLE_RADIUS;
+
   CALint cell_x, cell_y, cell_z;
   CALreal px, py, pz;
 
@@ -56,6 +58,9 @@ void drawParticles()
   float scale_x = X_CELLS-2;
   float scale_y = Y_CELLS-2;
   float scale_z = Z_CELLS-2;
+
+  particle_radius *= scale_x*scale_y*scale_z;
+
   glScalef(scale_x,scale_y,scale_z);
   glPushAttrib(GL_LIGHTING_BIT);
   glDisable(GL_LIGHTING);
@@ -80,7 +85,8 @@ void drawParticles()
                   glPushMatrix();
                   glTranslatef(-X_CELLS/2, -Y_CELLS/2 , -Z_CELLS/2);
                   glTranslated(px,py,pz);
-                  glutSolidSphere(particle_size,5,5);
+                  //glutSolidSphere(particle_radius,5,5);
+                  glutWireSphere(particle_radius,20,20);
                   glPopMatrix();
                 }
           }

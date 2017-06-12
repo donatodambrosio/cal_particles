@@ -30,7 +30,7 @@
 #define MAX_OCCUPANCY_VOLUME ((KEPLER_OCCUPANCY_FACTOR)*(CELL_VOLUME))
 
 // max allowed velocity
-#define V_MAX 0.9*CELL_SIDE/DELTA_T
+// #define V_MAX 0.9*CELL_SIDE/DELTA_T
 
 // Max number of particles per cell according to Kepler's conjecture
 #define MAX_NUMBER_OF_PARTICLES_PER_CELL  (int)(((MAX_OCCUPANCY_VOLUME)/(PARTICLE_VOLUME))+1)
@@ -53,8 +53,8 @@
 
 
 // Particles are randomly distributed on the 20% top layers
-#define TOP_LAYERS      (Z_CELLS) - 0.2 * (Z_CELLS)
-#define CELL_FILL_RATE  0.5 * (MAX_NUMBER_OF_PARTICLES_PER_CELL)
+#define TOP_LAYERS      (Z_CELLS) - 0.4 * (Z_CELLS)
+#define CELL_FILL_RATE  1.0 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 //Sottostati
 struct Substates
@@ -82,7 +82,7 @@ extern struct Substates Q;
 extern struct CALRun3D* a_simulazioni;
 
 // Computational steps
-#define STEPS 1000
+#define STEPS 10000
 
 // Verbose mode
 #define VERBOSE
