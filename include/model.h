@@ -14,7 +14,7 @@
 
 // PHYSICAL TIME
 //#define DELTA_T 0.001 //[s]
-#define DELTA_T 0.0001 //[s]
+#define DELTA_T 0.0005 //[s]
 
 
 // Particle mass, radius and volume

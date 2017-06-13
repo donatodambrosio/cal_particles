@@ -18,7 +18,6 @@ void transizioniGlobali(struct CALModel3D* modello)
   calUpdate3D(modello);
 
   calApplyElementaryProcess3D(modello,moviliCazzu);
-  calApplyElementaryProcess3D(modello,moviliCazzuSucali);
   calUpdate3D(modello);
 
   calApplyElementaryProcess3D(modello,collision);

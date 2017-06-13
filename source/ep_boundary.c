@@ -11,49 +11,49 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int x_cell, int y_cell, int 
   ny = PARTICLE_NODATA;
   nz = PARTICLE_NODATA;
 
-//  // x_cell = 0 (i.e. x = CELL_SIDE)
-//  if (x_cell == 0)
-//    {
-//      x = CELL_SIDE;
-//      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
-//      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
-//      nx = 1;
-//      ny = 0;
-//      nz = 0;
-//    }
+  // x_cell = 0 (i.e. x = CELL_SIDE)
+  if (x_cell == 0)
+    {
+      x = CELL_SIDE;
+      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
+      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      nx = 1;
+      ny = 0;
+      nz = 0;
+    }
 
-//  // x_cell = X_CELLS-1 (i.e. x = (X_CELLS-1)*CELL_SIDE)
-//  if (x_cell == X_CELLS-1)
-//    {
-//      x = (X_CELLS-1)*CELL_SIDE;
-//      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
-//      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
-//      nx = -1;
-//      ny = 0;
-//      nz = 0;
-//    }
+  // x_cell = X_CELLS-1 (i.e. x = (X_CELLS-1)*CELL_SIDE)
+  if (x_cell == X_CELLS-1)
+    {
+      x = (X_CELLS-1)*CELL_SIDE;
+      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
+      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      nx = -1;
+      ny = 0;
+      nz = 0;
+    }
 
-//  // y_cell = 0 (i.e. y = CELL_SIDE)
-//  if (y_cell == 0)
-//    {
-//      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
-//      y = CELL_SIDE;
-//      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
-//      nx = 0;
-//      ny = 1;
-//      nz = 0;
-//    }
+  // y_cell = 0 (i.e. y = CELL_SIDE)
+  if (y_cell == 0)
+    {
+      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
+      y = CELL_SIDE;
+      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      nx = 0;
+      ny = 1;
+      nz = 0;
+    }
 
-//  // y_cell = Y_CELLS-1 (i.e. x = (Y_CELLS-1)*CELL_SIDE)
-//  if (y_cell == Y_CELLS-1)
-//    {
-//      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
-//      y = (Y_CELLS-1)*CELL_SIDE;
-//      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
-//      nx = 0;
-//      ny = -1;
-//      nz = 0;
-//    }
+  // y_cell = Y_CELLS-1 (i.e. x = (Y_CELLS-1)*CELL_SIDE)
+  if (y_cell == Y_CELLS-1)
+    {
+      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
+      y = (Y_CELLS-1)*CELL_SIDE;
+      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      nx = 0;
+      ny = -1;
+      nz = 0;
+    }
 
   // z_cell = 0 (i.e. z = CELL_SIDE)
   if (z_cell == 0)

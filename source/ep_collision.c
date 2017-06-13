@@ -4,26 +4,26 @@
 
 #include <model.h>
 
-CALbyte pointPlaneCollision (CALreal* p, CALreal* v, CALreal* pB, CALreal* nB, CALreal particle_radius)
+CALbyte pointPlaneCollision (CALreal* p, CALreal* v, CALreal* B, CALreal* N, CALreal particle_radius)
 {
   CALint i = -1;
   CALreal d;
 
   // x = CELL_SIDE plane OR x = (X_CELLS-1)*CELL_SIDE plane
-  if (pB[0] == CELL_SIDE || pB[0] == (X_CELLS-1)*CELL_SIDE)
+  if (B[0] == CELL_SIDE || B[0] == (X_CELLS-1)*CELL_SIDE)
     i = 0;
 
   // y = CELL_SIDE plane OR y = (Y_CELLS-1)*CELL_SIDE plane
-  if (pB[1] == CELL_SIDE || pB[1] == (Y_CELLS-1)*CELL_SIDE)
+  if (B[1] == CELL_SIDE || B[1] == (Y_CELLS-1)*CELL_SIDE)
     i = 1;
 
   // z = CELL_SIDE plane OR z = (Z_CELLS-1)*CELL_SIDE plane
-  if (pB[2] == CELL_SIDE || pB[2] == (Z_CELLS-1)*CELL_SIDE)
+  if (B[2] == CELL_SIDE || B[2] == (Z_CELLS-1)*CELL_SIDE)
     i = 2;
 
-  if (i != -1 /*&& v[i] != 0*/)
+  if (i != -1 && v[i]*N[i] < 0.0)
     {
-      d = sqrt((p[i]-pB[i])*(p[i]-pB[i]));
+      d = sqrt((p[i]-B[i])*(p[i]-B[i]));
       if (d < particle_radius)
         {
           CALreal p_vel = v[i];
