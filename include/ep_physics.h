@@ -3,6 +3,6 @@
 
 #include <model.h>
 
-void applyForce(CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CALreal* vf);
+void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CALreal* vf);
 
 #endif

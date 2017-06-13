@@ -67,6 +67,9 @@ struct Substates
   //	struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
   //	struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 
+  struct CALSubstate3Dr **Fx;
+  struct CALSubstate3Dr **Fy;
+  struct CALSubstate3Dr **Fz;
   struct CALSubstate3Dr **px;
   struct CALSubstate3Dr **py;
   struct CALSubstate3Dr **pz;

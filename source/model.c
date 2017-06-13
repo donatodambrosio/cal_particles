@@ -30,6 +30,9 @@ void partilu()
 {
   u_modellu = calCADef3D(X_CELLS,Y_CELLS,Z_CELLS,CAL_MOORE_NEIGHBORHOOD_3D,CAL_SPACE_TOROIDAL,CAL_NO_OPT);
 
+  Q.Fx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  Q.Fy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  Q.Fz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.px = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.py = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.pz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
@@ -40,6 +43,9 @@ void partilu()
 
   for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
     {
+      Q.Fx[slot]    = calAddSubstate3Dr(u_modellu);
+      Q.Fy[slot]    = calAddSubstate3Dr(u_modellu);
+      Q.Fz[slot]    = calAddSubstate3Dr(u_modellu);
       Q.px[slot]    = calAddSubstate3Dr(u_modellu);
       Q.py[slot]    = calAddSubstate3Dr(u_modellu);
       Q.pz[slot]    = calAddSubstate3Dr(u_modellu);
@@ -48,12 +54,15 @@ void partilu()
       Q.vz[slot]    = calAddSubstate3Dr(u_modellu);
       Q.imove[slot] = calAddSubstate3Di(u_modellu);
 
+      calInitSubstate3Dr(u_modellu,Q.Fx[slot],   0.0);
+      calInitSubstate3Dr(u_modellu,Q.Fy[slot],   0.0);
+      calInitSubstate3Dr(u_modellu,Q.Fz[slot],   0.0);
       calInitSubstate3Dr(u_modellu,Q.px[slot],   PARTICLE_NODATA);
       calInitSubstate3Dr(u_modellu,Q.py[slot],   PARTICLE_NODATA);
       calInitSubstate3Dr(u_modellu,Q.pz[slot],   PARTICLE_NODATA);
-      calInitSubstate3Dr(u_modellu,Q.vx[slot],   0);
-      calInitSubstate3Dr(u_modellu,Q.vy[slot],   0);
-      calInitSubstate3Dr(u_modellu,Q.vz[slot],   0);
+      calInitSubstate3Dr(u_modellu,Q.vx[slot],   0.0);
+      calInitSubstate3Dr(u_modellu,Q.vy[slot],   0.0);
+      calInitSubstate3Dr(u_modellu,Q.vz[slot],   0.0);
       calInitSubstate3Di(u_modellu,Q.imove[slot],PARTICLE_ABSENT);
     }
 

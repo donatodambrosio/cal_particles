@@ -1,9 +1,10 @@
 #include <ep_physics.h>
 #include <math.h>
 
-void applyForce(CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CALreal* vf)
+void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CALreal* vf)
 {
-  CALreal F[3], a[3];
+  CALreal a[3];
+//  CALreal F[3];
 
   // F[0] =  0;
   // F[1] =  0;
@@ -12,12 +13,6 @@ void applyForce(CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CAL
 //  F[0] =  m*0 - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[0];
 //  F[1] =  m*0 - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[1];
 //  F[2] = -m*G - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[2];
-
-  F[0] =  0;
-  F[1] =  0;
-  F[2] =  -G;
-  for (int i=0; i<3; i++)
-    F[i] *= m;
 
   a[0] = F[0]/m;
   a[1] = F[1]/m;

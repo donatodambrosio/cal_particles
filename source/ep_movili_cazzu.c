@@ -3,6 +3,9 @@
 
 void pezziala(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
+  calSet3Dr(ca, Q.Fx[slot],   cell_x,cell_y,cell_z,0.0);
+  calSet3Dr(ca, Q.Fy[slot],   cell_x,cell_y,cell_z,0.0);
+  calSet3Dr(ca, Q.Fz[slot],   cell_x,cell_y,cell_z,0.0);
   calSet3Dr(ca, Q.px[slot],   cell_x,cell_y,cell_z,PARTICLE_NODATA);
   calSet3Dr(ca, Q.py[slot],   cell_x,cell_y,cell_z,PARTICLE_NODATA);
   calSet3Dr(ca, Q.pz[slot],   cell_x,cell_y,cell_z,PARTICLE_NODATA);
@@ -12,15 +15,18 @@ void pezziala(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_
   calSet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z,PARTICLE_ABSENT);
 }
 
-void sucala(int detination_slot, int source_sloot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
+void sucala(int destination_slot, int source_slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
-  calSet3Dr(ca, Q.px[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.px[source_sloot],   cell_x,cell_y,cell_z,n));
-  calSet3Dr(ca, Q.py[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.py[source_sloot],   cell_x,cell_y,cell_z,n));
-  calSet3Dr(ca, Q.pz[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.pz[source_sloot],   cell_x,cell_y,cell_z,n));
-  calSet3Dr(ca, Q.vx[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vx[source_sloot],   cell_x,cell_y,cell_z,n));
-  calSet3Dr(ca, Q.vy[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vy[source_sloot],   cell_x,cell_y,cell_z,n));
-  calSet3Dr(ca, Q.vz[detination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vz[source_sloot],   cell_x,cell_y,cell_z,n));
-  calSet3Di(ca, Q.imove[detination_slot],cell_x,cell_y,cell_z,calGetX3Di(ca,Q.imove[source_sloot],cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.Fx[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.Fx[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.Fy[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.Fy[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.Fz[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.Fz[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.px[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.px[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.py[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.py[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.pz[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.pz[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.vx[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vx[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.vy[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vy[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Dr(ca, Q.vz[destination_slot],   cell_x,cell_y,cell_z,calGetX3Dr(ca,Q.vz[source_slot],   cell_x,cell_y,cell_z,n));
+  calSet3Di(ca, Q.imove[destination_slot],cell_x,cell_y,cell_z,calGetX3Di(ca,Q.imove[source_slot],cell_x,cell_y,cell_z,n));
 }
 
 void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
