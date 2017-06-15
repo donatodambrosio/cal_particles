@@ -1,4 +1,5 @@
 #include <ep_physics.h>
+#include <ep_utils.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -35,4 +36,20 @@ void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALr
 #endif
         }
     }
+}
+
+
+void resetF(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
+{
+  if (!ncestiArmenuNaParticella(ca, cell_x, cell_y, cell_z, 0))
+    return;
+
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    if (calGet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
+      {
+        calSet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
+        calSet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
+        calSet3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z,-PARTICLE_MASS*G);
+      }
+
 }

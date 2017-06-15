@@ -3,6 +3,7 @@
 #include <ep_init.h>
 #include <ep_movili.h>
 #include <ep_movili_cazzu.h>
+#include <ep_physics.h>
 #include <ep_utils.h>
 #include <sim_stop.h>
 #include <model.h>
@@ -15,6 +16,9 @@ CALreal elapsed_time;
 
 void transizioniGlobali(struct CALModel3D* modello)
 {
+  calApplyElementaryProcess3D(modello, resetF);
+  calUpdate3D(modello);
+
   calApplyElementaryProcess3D(modello,collision);
   calUpdate3D(modello);
 

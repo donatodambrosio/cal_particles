@@ -36,25 +36,26 @@ CALbyte pointPlaneCollision (CALreal* r, CALreal* v, CALreal* B, CALreal* N, CAL
 
 void collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
-  CALreal F[3], r[3], v[3];
-  CALreal B[3], N[3];
   CALreal Fi[3], ri[3], vi[3];
-  CALreal Fn[3], pn[3], vn[3];
+  CALreal B[3], N[3];
+  CALreal Fj[3], rj[3], vj[3];
+  CALreal rij[3], dij, enij[3];
+  CALreal delta_n;
 
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     if (calGet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
       {
-        F[0] = calGet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z);
-        F[1] = calGet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z);
-        F[2] = calGet3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z);
+        Fi[0] = calGet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z);
+        Fi[1] = calGet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z);
+        Fi[2] = calGet3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z);
 
-        r[0] = calGet3Dr(ca, Q.rx[slot],cell_x,cell_y,cell_z);
-        r[1] = calGet3Dr(ca, Q.ry[slot],cell_x,cell_y,cell_z);
-        r[2] = calGet3Dr(ca, Q.rz[slot],cell_x,cell_y,cell_z);
+        ri[0] = calGet3Dr(ca, Q.rx[slot],cell_x,cell_y,cell_z);
+        ri[1] = calGet3Dr(ca, Q.ry[slot],cell_x,cell_y,cell_z);
+        ri[2] = calGet3Dr(ca, Q.rz[slot],cell_x,cell_y,cell_z);
 
-        v[0] = calGet3Dr(ca, Q.vx[slot],cell_x,cell_y,cell_z);
-        v[1] = calGet3Dr(ca, Q.vy[slot],cell_x,cell_y,cell_z);
-        v[2] = calGet3Dr(ca, Q.vz[slot],cell_x,cell_y,cell_z);
+        vi[0] = calGet3Dr(ca, Q.vx[slot],cell_x,cell_y,cell_z);
+        vi[1] = calGet3Dr(ca, Q.vy[slot],cell_x,cell_y,cell_z);
+        vi[2] = calGet3Dr(ca, Q.vz[slot],cell_x,cell_y,cell_z);
 
         // particle-plane collision
         for (int n=1; n<ca->sizeof_X; n++)
@@ -68,76 +69,85 @@ void collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
               N[1] = calGetX3Dr(ca, Q.vy[0],cell_x,cell_y,cell_z,n);
               N[2] = calGetX3Dr(ca, Q.vz[0],cell_x,cell_y,cell_z,n);
 
-              if(pointPlaneCollision(r, v, B, N, PARTICLE_RADIUS))
+              if(pointPlaneCollision(ri, vi, B, N, PARTICLE_RADIUS))
                 {
-                  calSet3Dr(ca, Q.vx[slot],cell_x,cell_y,cell_z,v[0]);
-                  calSet3Dr(ca, Q.vy[slot],cell_x,cell_y,cell_z,v[1]);
-                  calSet3Dr(ca, Q.vz[slot],cell_x,cell_y,cell_z,v[2]);
+                  calSet3Dr(ca, Q.vx[slot],cell_x,cell_y,cell_z,vi[0]);
+                  calSet3Dr(ca, Q.vy[slot],cell_x,cell_y,cell_z,vi[1]);
+                  calSet3Dr(ca, Q.vz[slot],cell_x,cell_y,cell_z,vi[2]);
                 }
             }
 
+
         // particle-particle collision
-        CALreal k = 0.0001;
+        CALreal kn = 100;
         for (int inner_slot=slot+1; inner_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; inner_slot++)
           if (calGet3Di(ca, Q.imove[inner_slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
             {
-              ri[0] = calGet3Dr(ca, Q.rx[inner_slot],cell_x,cell_y,cell_z);
-              ri[1] = calGet3Dr(ca, Q.ry[inner_slot],cell_x,cell_y,cell_z);
-              ri[2] = calGet3Dr(ca, Q.rz[inner_slot],cell_x,cell_y,cell_z);
+              rj[0] = calGet3Dr(ca, Q.rx[inner_slot],cell_x,cell_y,cell_z);
+              rj[1] = calGet3Dr(ca, Q.ry[inner_slot],cell_x,cell_y,cell_z);
+              rj[2] = calGet3Dr(ca, Q.rz[inner_slot],cell_x,cell_y,cell_z);
 
-              if (distance(r, ri) < 2*PARTICLE_RADIUS)
+              dij = distance(ri, rj);
+              if (dij < 2*PARTICLE_RADIUS)
                 {
-                  Fi[0] = calGet3Dr(ca, Q.Fx[inner_slot],cell_x,cell_y,cell_z);
-                  Fi[1] = calGet3Dr(ca, Q.Fy[inner_slot],cell_x,cell_y,cell_z);
-                  Fi[2] = calGet3Dr(ca, Q.Fz[inner_slot],cell_x,cell_y,cell_z);
+                  Fj[0] = calGet3Dr(ca, Q.Fx[inner_slot],cell_x,cell_y,cell_z);
+                  Fj[1] = calGet3Dr(ca, Q.Fy[inner_slot],cell_x,cell_y,cell_z);
+                  Fj[2] = calGet3Dr(ca, Q.Fz[inner_slot],cell_x,cell_y,cell_z);
 
-                  vi[0] = calGet3Dr(ca, Q.vx[inner_slot],cell_x,cell_y,cell_z);
-                  vi[1] = calGet3Dr(ca, Q.vy[inner_slot],cell_x,cell_y,cell_z);
-                  vi[2] = calGet3Dr(ca, Q.vz[inner_slot],cell_x,cell_y,cell_z);
+                  vj[0] = calGet3Dr(ca, Q.vx[inner_slot],cell_x,cell_y,cell_z);
+                  vj[1] = calGet3Dr(ca, Q.vy[inner_slot],cell_x,cell_y,cell_z);
+                  vj[2] = calGet3Dr(ca, Q.vz[inner_slot],cell_x,cell_y,cell_z);
 
-                  CALreal delta_n[3];
-                  for (int i=0; i<3; i++)
-                    delta_n[i] = (2*PARTICLE_RADIUS - (r[i] - ri[i])) / PARTICLE_RADIUS;
+                  for (int k=0; k<3; k++)
+                    {
+                      rij[k] = rj[k] - ri[k];
+                      enij[k] = rij[k] / dij;
+                    }
+                  delta_n = 2*PARTICLE_RADIUS - dij;
 
-                  calSet3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z)+k*delta_n[0]);
-                  calSet3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z)+k*delta_n[1]);
-                  calSet3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z)+k*delta_n[2]);
+                  calSet3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[0]);
+                  calSet3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[1]);
+                  calSet3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[2]);
 
-                  calSet3Dr(ca, Q.Fx[inner_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[inner_slot], cell_x,cell_y,cell_z)-k*delta_n[0]);
-                  calSet3Dr(ca, Q.Fy[inner_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[inner_slot], cell_x,cell_y,cell_z)-k*delta_n[1]);
-                  calSet3Dr(ca, Q.Fz[inner_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[inner_slot], cell_x,cell_y,cell_z)-k*delta_n[2]);
+                  calSet3Dr(ca, Q.Fx[inner_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[inner_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[0]);
+                  calSet3Dr(ca, Q.Fy[inner_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[inner_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[1]);
+                  calSet3Dr(ca, Q.Fz[inner_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[inner_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[2]);
                 }
             }
 
         for (int n = 1; n<ca->sizeof_X; n++)
-          for (int other_slot=0; other_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; other_slot++)
-            if (calGetX3Di(ca, Q.imove[other_slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
+          for (int outer_slot=0; outer_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; outer_slot++)
+            if (calGetX3Di(ca, Q.imove[outer_slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
               {
-                pn[0] = calGetX3Dr(ca, Q.rx[other_slot],cell_x,cell_y,cell_z,n);
-                pn[1] = calGetX3Dr(ca, Q.ry[other_slot],cell_x,cell_y,cell_z,n);
-                pn[2] = calGetX3Dr(ca, Q.rz[other_slot],cell_x,cell_y,cell_z,n);
+                rj[0] = calGetX3Dr(ca, Q.rx[outer_slot],cell_x,cell_y,cell_z,n);
+                rj[1] = calGetX3Dr(ca, Q.ry[outer_slot],cell_x,cell_y,cell_z,n);
+                rj[2] = calGetX3Dr(ca, Q.rz[outer_slot],cell_x,cell_y,cell_z,n);
 
-                if (distance(r, pn) < 2*PARTICLE_RADIUS)
+                dij = distance(ri, rj);
+                if (dij < 2*PARTICLE_RADIUS)
                   {
-                    Fn[0] = calGet3Dr(ca, Q.Fx[other_slot],cell_x,cell_y,cell_z);
-                    Fn[1] = calGet3Dr(ca, Q.Fy[other_slot],cell_x,cell_y,cell_z);
-                    Fn[2] = calGet3Dr(ca, Q.Fz[other_slot],cell_x,cell_y,cell_z);
+                    Fj[0] = calGet3Dr(ca, Q.Fx[outer_slot],cell_x,cell_y,cell_z);
+                    Fj[1] = calGet3Dr(ca, Q.Fy[outer_slot],cell_x,cell_y,cell_z);
+                    Fj[2] = calGet3Dr(ca, Q.Fz[outer_slot],cell_x,cell_y,cell_z);
 
-                    vi[0] = calGet3Dr(ca, Q.vx[other_slot],cell_x,cell_y,cell_z);
-                    vi[1] = calGet3Dr(ca, Q.vy[other_slot],cell_x,cell_y,cell_z);
-                    vi[2] = calGet3Dr(ca, Q.vz[other_slot],cell_x,cell_y,cell_z);
+                    vj[0] = calGet3Dr(ca, Q.vx[outer_slot],cell_x,cell_y,cell_z);
+                    vj[1] = calGet3Dr(ca, Q.vy[outer_slot],cell_x,cell_y,cell_z);
+                    vj[2] = calGet3Dr(ca, Q.vz[outer_slot],cell_x,cell_y,cell_z);
 
-                    CALreal delta_n[3];
-                    for (int i=0; i<3; i++)
-                      delta_n[i] = (2*PARTICLE_RADIUS - (r[i] - ri[i])) / PARTICLE_RADIUS;
+                    for (int k=0; k<3; k++)
+                      {
+                        rij[k] = rj[k] - ri[k];
+                        enij[k] = rij[k] / dij;
+                      }
+                    delta_n = 2*PARTICLE_RADIUS - dij;
 
-                    calSet3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z)+k*delta_n[0]);
-                    calSet3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z)+k*delta_n[1]);
-                    calSet3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z)+k*delta_n[2]);
+                    calSet3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[0]);
+                    calSet3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[1]);
+                    calSet3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[2]);
 
-                    calSet3Dr(ca, Q.Fx[other_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[other_slot], cell_x,cell_y,cell_z)-k*delta_n[0]);
-                    calSet3Dr(ca, Q.Fy[other_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[other_slot], cell_x,cell_y,cell_z)-k*delta_n[1]);
-                    calSet3Dr(ca, Q.Fz[other_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[other_slot], cell_x,cell_y,cell_z)-k*delta_n[2]);
+                    calSet3Dr(ca, Q.Fx[outer_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[outer_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[0]);
+                    calSet3Dr(ca, Q.Fy[outer_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[outer_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[1]);
+                    calSet3Dr(ca, Q.Fz[outer_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[outer_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[2]);
                   }
               }
       }
