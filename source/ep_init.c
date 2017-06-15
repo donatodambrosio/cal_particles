@@ -4,10 +4,10 @@
 
 void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
-  //if (x_cell < TOP_LAYERS || calGet3Di(ca, Q.imove[0],x_cell,y_cell,z_cell) == PARTICLE_BORDER)
-  //if (y_cell < TOP_LAYERS || calGet3Di(ca, Q.imove[0],x_cell,y_cell,z_cell) == PARTICLE_BORDER)
-  //if (z_cell < TOP_LAYERS || calGet3Di(ca, Q.imove[0],x_cell,y_cell,z_cell) == PARTICLE_BORDER)
-  if (cell_x < TOP_LAYERS || cell_z < TOP_LAYERS || calGet3Di(ca, Q.imove[0],cell_x,cell_y,cell_z) == PARTICLE_BORDER)
+  //if (cell_x < TOP_LAYERS || calGet3Di(ca, Q.imove[0],cell_x,cell_y,cell_z) == PARTICLE_BORDER)
+  //if (cell_y < TOP_LAYERS || calGet3Di(ca, Q.imove[0],cell_x,cell_y,cell_z) == PARTICLE_BORDER)
+  if (cell_z < TOP_LAYERS || calGet3Di(ca, Q.imove[0],cell_x,cell_y,cell_z) == PARTICLE_BORDER)
+  //if (cell_x < TOP_LAYERS || cell_y < TOP_LAYERS || cell_z < TOP_LAYERS || calGet3Di(ca, Q.imove[0],cell_x,cell_y,cell_z) == PARTICLE_BORDER)
     return;
 
   CALreal c;

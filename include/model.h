@@ -53,7 +53,7 @@
 
 // Particles are randomly distributed on the 20% top layers
 #define TOP_LAYERS      (Z_CELLS) - 0.4 * (Z_CELLS)
-#define CELL_FILL_RATE  1.0 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
+#define CELL_FILL_RATE  0.1 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 //Sottostati
 struct Substates

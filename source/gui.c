@@ -85,8 +85,8 @@ void drawParticles()
                   glPushMatrix();
                   glTranslatef(-X_CELLS/2, -Y_CELLS/2 , -Z_CELLS/2);
                   glTranslated(px,py,pz);
-                  //glutSolidSphere(particle_radius,5,5);
-                  glutWireSphere(particle_radius,20,20);
+                  glutSolidSphere(particle_radius,10,10);
+                  //glutWireSphere(particle_radius,20,20);
                   glPopMatrix();
                 }
           }

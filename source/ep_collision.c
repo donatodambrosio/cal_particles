@@ -145,9 +145,11 @@ void collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     calSet3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[1]);
                     calSet3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z)-kn*delta_n*enij[2]);
 
+                    /*
                     calSet3Dr(ca, Q.Fx[outer_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[outer_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[0]);
                     calSet3Dr(ca, Q.Fy[outer_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[outer_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[1]);
                     calSet3Dr(ca, Q.Fz[outer_slot], cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[outer_slot], cell_x,cell_y,cell_z)+kn*delta_n*enij[2]);
+                    */
                   }
               }
       }
