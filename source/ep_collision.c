@@ -36,6 +36,7 @@ CALbyte pointPlaneCollision (CALreal* r, CALreal* v, CALreal* B, CALreal* N, CAL
 
 void collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
+  CALreal kn = KN;
   CALreal Fi[3], ri[3], vi[3];
   CALreal B[3], N[3];
   CALreal Fj[3], rj[3], vj[3];
@@ -79,7 +80,6 @@ void collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
 
         // particle-particle collision
-        CALreal kn = 100;
         for (int inner_slot=slot+1; inner_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; inner_slot++)
           if (calGet3Di(ca, Q.imove[inner_slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
             {

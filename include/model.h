@@ -10,6 +10,7 @@
 // ACCELERATION OF GRAVITY
 #define G 9.81
 #define AIR_VISCOSITY 1.81e-5
+#define KN 1000
 
 // PHYSICAL TIME
 //#define DELTA_T 0.001 //[s]
