@@ -5,8 +5,7 @@
 #include <OpenCAL/cal3DRun.h>
 #include <OpenCAL/cal3DIO.h>
 #include <OpenCAL/cal3DUnsafe.h>
-#include <GL/glut.h>
-#include <stdlib.h>
+
 
 // ACCELERATION OF GRAVITY
 #define G 9.81
@@ -59,20 +58,20 @@
 //Sottostati
 struct Substates
 {
-  //  struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  //	struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  //	struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  //	struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  //	struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  //	struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  //	struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  // struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  // struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  // struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  // struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  // struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  // struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
+  // struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
 
   struct CALSubstate3Dr **Fx;
   struct CALSubstate3Dr **Fy;
   struct CALSubstate3Dr **Fz;
-  struct CALSubstate3Dr **px;
-  struct CALSubstate3Dr **py;
-  struct CALSubstate3Dr **pz;
+  struct CALSubstate3Dr **rx;
+  struct CALSubstate3Dr **ry;
+  struct CALSubstate3Dr **rz;
   struct CALSubstate3Dr **vx;
   struct CALSubstate3Dr **vy;
   struct CALSubstate3Dr **vz;
@@ -83,6 +82,7 @@ struct Substates
 extern struct CALModel3D* u_modellu;
 extern struct Substates Q;
 extern struct CALRun3D* a_simulazioni;
+extern CALreal elapsed_time;
 
 // Computational steps
 #define STEPS 10000

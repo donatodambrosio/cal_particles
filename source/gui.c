@@ -78,9 +78,9 @@ void drawParticles()
             for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
               if(calGet3Di(u_modellu,Q.imove[slot],cell_x,cell_y,cell_z) != PARTICLE_ABSENT)
                 {
-                  px = calGet3Dr(u_modellu,Q.px[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
-                  py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
-                  pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
+                  px = calGet3Dr(u_modellu,Q.rx[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
+                  py = calGet3Dr(u_modellu,Q.ry[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
+                  pz = calGet3Dr(u_modellu,Q.rz[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
 
                   glPushMatrix();
                   glTranslatef(-X_CELLS/2, -Y_CELLS/2 , -Z_CELLS/2);
@@ -178,9 +178,9 @@ void simulationRun(void)
     }
 
   char winwow_title[256];
-  char steps_cstr[16];
+  char steps_cstr[64];
   strcpy(winwow_title, "cal_DEM - step ");
-  sprintf(steps_cstr, "%d", a_simulazioni->step);
+  sprintf(steps_cstr, "%d, elapsed_time %.3f s", a_simulazioni->step, elapsed_time);
   strcat(winwow_title, steps_cstr);
   glutSetWindowTitle(winwow_title);
 }
@@ -237,10 +237,29 @@ void mouse(int button, int state, int x, int y)
     }
 }
 
+void keyboard(unsigned char key, int x, int y)
+{
+  switch(key)
+    {
+    case ' ':
+      mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, x, y);
+      break;
+    case 'p':
+      mouse(GLUT_RIGHT_BUTTON, GLUT_DOWN, x, y);
+      break;
+    case 27: //ESC
+      exit(EXIT_SUCCESS);
+    }
+
+}
+
 void specialKeys(int key, int x, int y){
 
   //GLubyte specialKey = glutGetModifiers();
   const GLfloat x_rot = 5.0, y_rot = 5.0, z_trans = 5.0;
+
+  if (key==GLUT_KEY_F9)
+    mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, x, y);
 
   if(key==GLUT_KEY_DOWN){
       model_view.x_rot += x_rot;
@@ -276,6 +295,7 @@ int main(int argc, char** argv)
   glutDisplayFunc(display);
   glutReshapeFunc(reshape);
   glutSpecialFunc(specialKeys);
+  glutKeyboardFunc(keyboard);
   glutMouseFunc(mouse);
   glutMainLoop();
 

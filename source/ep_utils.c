@@ -14,7 +14,7 @@ void printSummary(struct CALModel3D* ca)
 {
   number_of_particles = 0;
   calApplyElementaryProcess3D(ca,summary);
-  printf("The total number of particles is: %d\n", number_of_particles);
+  printf("Step %d, elapsed_time %.3f s, number of particles: %d\n", a_simulazioni->step, elapsed_time, number_of_particles);
 }
 
 CALbyte ncestiArmenuNaParticella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)

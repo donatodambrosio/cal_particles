@@ -7,7 +7,10 @@ CALbyte caminalu(struct CALModel3D* modello)
 
   if (step <= STEPS)
     {
+#ifdef VERBOSE
       printSummary(modello);
+#endif
+
       return CAL_FALSE;
     }
 

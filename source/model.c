@@ -6,24 +6,29 @@
 #include <ep_utils.h>
 #include <sim_stop.h>
 #include <model.h>
+#include <stdlib.h>
 
 struct CALModel3D* u_modellu;
 struct CALRun3D* a_simulazioni;
 struct Substates Q;
-
+CALreal elapsed_time;
 
 void transizioniGlobali(struct CALModel3D* modello)
 {
+  calApplyElementaryProcess3D(modello,collision);
+  calUpdate3D(modello);
+
   calApplyElementaryProcess3D(modello,movili);
   calUpdate3D(modello);
 
   calApplyElementaryProcess3D(modello,moviliCazzu);
   calUpdate3D(modello);
 
-  calApplyElementaryProcess3D(modello,collision);
-  calUpdate3D(modello);
+  elapsed_time += DELTA_T;
 
+#ifdef VERBOSE
   printSummary(modello);
+#endif
 }
 
 void partilu()
@@ -33,9 +38,9 @@ void partilu()
   Q.Fx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.Fy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.Fz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-  Q.px = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-  Q.py = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-  Q.pz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  Q.rx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  Q.ry = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  Q.rz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.vx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.vy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q.vz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
@@ -46,9 +51,9 @@ void partilu()
       Q.Fx[slot]    = calAddSubstate3Dr(u_modellu);
       Q.Fy[slot]    = calAddSubstate3Dr(u_modellu);
       Q.Fz[slot]    = calAddSubstate3Dr(u_modellu);
-      Q.px[slot]    = calAddSubstate3Dr(u_modellu);
-      Q.py[slot]    = calAddSubstate3Dr(u_modellu);
-      Q.pz[slot]    = calAddSubstate3Dr(u_modellu);
+      Q.rx[slot]    = calAddSubstate3Dr(u_modellu);
+      Q.ry[slot]    = calAddSubstate3Dr(u_modellu);
+      Q.rz[slot]    = calAddSubstate3Dr(u_modellu);
       Q.vx[slot]    = calAddSubstate3Dr(u_modellu);
       Q.vy[slot]    = calAddSubstate3Dr(u_modellu);
       Q.vz[slot]    = calAddSubstate3Dr(u_modellu);
@@ -57,9 +62,9 @@ void partilu()
       calInitSubstate3Dr(u_modellu,Q.Fx[slot],   0.0);
       calInitSubstate3Dr(u_modellu,Q.Fy[slot],   0.0);
       calInitSubstate3Dr(u_modellu,Q.Fz[slot],   0.0);
-      calInitSubstate3Dr(u_modellu,Q.px[slot],   PARTICLE_NODATA);
-      calInitSubstate3Dr(u_modellu,Q.py[slot],   PARTICLE_NODATA);
-      calInitSubstate3Dr(u_modellu,Q.pz[slot],   PARTICLE_NODATA);
+      calInitSubstate3Dr(u_modellu,Q.rx[slot],   PARTICLE_NODATA);
+      calInitSubstate3Dr(u_modellu,Q.ry[slot],   PARTICLE_NODATA);
+      calInitSubstate3Dr(u_modellu,Q.rz[slot],   PARTICLE_NODATA);
       calInitSubstate3Dr(u_modellu,Q.vx[slot],   0.0);
       calInitSubstate3Dr(u_modellu,Q.vy[slot],   0.0);
       calInitSubstate3Dr(u_modellu,Q.vz[slot],   0.0);
@@ -70,6 +75,7 @@ void partilu()
   calApplyElementaryProcess3D(u_modellu, boundary_cells);
 
   // Initial conditions
+  elapsed_time = 0.0;
   calApplyElementaryProcess3D(u_modellu, mmiscali_nta_cella);
   // ATTENZIONE, QUESTO PROCESSO ELEMENTARE DEVE AVVENIRE IN SEQUENZIALE
   calApplyElementaryProcess3D(u_modellu, cancella_particelle_in_urto);

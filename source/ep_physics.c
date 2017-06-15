@@ -1,5 +1,6 @@
 #include <ep_physics.h>
 #include <math.h>
+#include <stdlib.h>
 
 void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CALreal* vf)
 {
@@ -27,6 +28,11 @@ void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALr
         {
           pf[i] = p0[i];
           vf[i] = v0[i];
+
+#ifdef VERBOSE
+          printf("ERROR: a particle displacemnt is greater than CELL_SIDE.\n");
+          exit(EXIT_FAILURE);
+#endif
         }
     }
 }
