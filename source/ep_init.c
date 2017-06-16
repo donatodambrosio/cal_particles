@@ -94,15 +94,15 @@ void cancella_particelle_in_urto(struct CALModel3D* ca, int cell_x, int cell_y, 
                 calInit3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z,PARTICLE_ABSENT);
               }
           }
-        for (int n = 1; n<ca->sizeof_X; n++)
-          for (int other_slot=0; other_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; other_slot++)
-            if (calGetX3Di(ca, Q.imove[other_slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
-            {
-              pn[0] = calGetX3Dr(ca, Q.rx[other_slot],cell_x,cell_y,cell_z,n);
-              pn[1] = calGetX3Dr(ca, Q.ry[other_slot],cell_x,cell_y,cell_z,n);
-              pn[2] = calGetX3Dr(ca, Q.rz[other_slot],cell_x,cell_y,cell_z,n);
 
-              if (distance(p, pn) < 2*PARTICLE_RADIUS)
+        for (int n = 1; n<ca->sizeof_X; n++)
+          if (calGetX3Di(ca, Q.imove[0],cell_x,cell_y,cell_z,n) == PARTICLE_BORDER)
+            {
+              pn[0] = calGetX3Dr(ca, Q.rx[0],cell_x,cell_y,cell_z,n);
+              pn[1] = calGetX3Dr(ca, Q.ry[0],cell_x,cell_y,cell_z,n);
+              pn[2] = calGetX3Dr(ca, Q.rz[0],cell_x,cell_y,cell_z,n);
+
+              if (distance(p, pn) < 3*PARTICLE_RADIUS)
                 {
                   //printf("particle (%d,%d,%d,%d) is in outher collision state\n", cell_x, cell_y, cell_z, slot);
                   calInit3Dr(ca, Q.Fx[slot],   cell_x,cell_y,cell_z,0.0);
@@ -117,5 +117,28 @@ void cancella_particelle_in_urto(struct CALModel3D* ca, int cell_x, int cell_y, 
                   calInit3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z,PARTICLE_ABSENT);
                 }
             }
+          else
+            for (int outer_slot=0; outer_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; outer_slot++)
+              if (calGetX3Di(ca, Q.imove[outer_slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
+                {
+                  pn[0] = calGetX3Dr(ca, Q.rx[outer_slot],cell_x,cell_y,cell_z,n);
+                  pn[1] = calGetX3Dr(ca, Q.ry[outer_slot],cell_x,cell_y,cell_z,n);
+                  pn[2] = calGetX3Dr(ca, Q.rz[outer_slot],cell_x,cell_y,cell_z,n);
+
+                  if (distance(p, pn) < 2*PARTICLE_RADIUS)
+                    {
+                      //printf("particle (%d,%d,%d,%d) is in outher collision state\n", cell_x, cell_y, cell_z, slot);
+                      calInit3Dr(ca, Q.Fx[slot],   cell_x,cell_y,cell_z,0.0);
+                      calInit3Dr(ca, Q.Fy[slot],   cell_x,cell_y,cell_z,0.0);
+                      calInit3Dr(ca, Q.Fz[slot],   cell_x,cell_y,cell_z,0.0);
+                      calInit3Dr(ca, Q.rx[slot],   cell_x,cell_y,cell_z,PARTICLE_NODATA);
+                      calInit3Dr(ca, Q.ry[slot],   cell_x,cell_y,cell_z,PARTICLE_NODATA);
+                      calInit3Dr(ca, Q.rz[slot],   cell_x,cell_y,cell_z,PARTICLE_NODATA);
+                      calInit3Dr(ca, Q.vx[slot],   cell_x,cell_y,cell_z,0);
+                      calInit3Dr(ca, Q.vy[slot],   cell_x,cell_y,cell_z,0);
+                      calInit3Dr(ca, Q.vz[slot],   cell_x,cell_y,cell_z,0);
+                      calInit3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z,PARTICLE_ABSENT);
+                    }
+                }
       }
 }
