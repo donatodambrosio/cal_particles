@@ -5,12 +5,13 @@
 #include <OpenCAL/cal3DRun.h>
 #include <OpenCAL/cal3DIO.h>
 #include <OpenCAL/cal3DUnsafe.h>
+#include <math.h>
 
 // FORCES FLAGS
 #define GRAVITY
 #define STOCKES
 #define ELASTIC
-//#define VISCOUS
+#define VISCOELASTIC
 
 // ACCELERATION OF GRAVITY
 #define G 9.81
@@ -18,16 +19,15 @@
 #define KN 1000
 #define ETHA 0.01
 
-// PHYSICAL TIME
-//#define DELTA_T 0.001 //[s]
-#define DELTA_T 0.0001 //[s]
-
-
 // Particle mass, radius and volume
 #define PI 3.14159265358979
 #define PARTICLE_MASS 0.001
 #define PARTICLE_RADIUS (0.0005)
 #define PARTICLE_VOLUME ((4.0/3.0)*PI*PARTICLE_RADIUS*PARTICLE_RADIUS*PARTICLE_RADIUS)
+
+// PHYSICAL TIME
+//#define DELTA_T 0.001 //[s]
+#define DELTA_T (0.05 * sqrt(PARTICLE_MASS/KN)) //[s]
 
 // Cell side [m], volume [m^3] and max occupancy volume [m^3] according to Kepler's conjecture
 #define CELL_SIDE (0.002)

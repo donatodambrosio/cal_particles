@@ -23,7 +23,8 @@ void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALr
   for (int i=0; i<3; i++)
     {
       vf[i] = v0[i]+a[i]*t;
-      pf[i] = p0[i] + v0[i]*t + 0.5*a[i]*t*t;
+      //pf[i] = p0[i] + v0[i]*t + 0.5*a[i]*t*t;
+      pf[i] = p0[i] + vf[i]*t;
 
       if (fabs(pf[i]-p0[i]) >= CELL_SIDE)
         {

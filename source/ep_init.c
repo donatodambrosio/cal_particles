@@ -5,7 +5,27 @@
 void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
   /*
-  if (cell_x == 2 && cell_y == 2 && (cell_z == TOP_LAYERS - 1 || cell_z == TOP_LAYERS - 2))
+  CALreal v = 0.1;
+  //if (cell_x == 2 && cell_y == 2 && (cell_z == TOP_LAYERS - 1 || cell_z == TOP_LAYERS - 2))
+  if (cell_x == 2 && cell_y == 2 && cell_z == TOP_LAYERS - 4)
+  {
+      CALreal px = CELL_SIDE * (cell_x);
+      CALreal py = CELL_SIDE * (cell_y);
+      CALreal pz = CELL_SIDE * (cell_z);
+
+      calInit3Dr(ca, Q.Fx[0],cell_x,cell_y,cell_z,0.0);
+      calInit3Dr(ca, Q.Fy[0],cell_x,cell_y,cell_z,0.0);
+      calInit3Dr(ca, Q.Fz[0],cell_x,cell_y,cell_z,-PARTICLE_MASS*G);
+      calInit3Dr(ca, Q.rx[0],cell_x,cell_y,cell_z,px);
+      calInit3Dr(ca, Q.ry[0],cell_x,cell_y,cell_z,py);
+      calInit3Dr(ca, Q.rz[0],cell_x,cell_y,cell_z,pz);
+      calInit3Dr(ca, Q.vx[0],cell_x,cell_y,cell_z, v);
+      calInit3Dr(ca, Q.vy[0],cell_x,cell_y,cell_z,0.0);
+      calInit3Dr(ca, Q.vz[0],cell_x,cell_y,cell_z,0.0);
+      calInit3Di(ca, Q.imove[0],cell_x,cell_y,cell_z,PARTICLE_PRESENT);
+  }
+
+  if (cell_x == 3 && cell_y == 2 && cell_z == TOP_LAYERS - 4)
   {
       CALreal px = CELL_SIDE * (cell_x);
       CALreal py = CELL_SIDE * (cell_y);

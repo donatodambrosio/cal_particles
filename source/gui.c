@@ -288,7 +288,7 @@ int main(int argc, char** argv)
   partilu();
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(1600, 900);
+  glutInitWindowSize(1200, 800);
   glutInitWindowPosition(100, 100);
   glutCreateWindow("cal_DEM");
   init();

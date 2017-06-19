@@ -23,7 +23,7 @@ void printSummary(struct CALModel3D* ca)
   total_energy = 0.0;
 
   calApplyElementaryProcess3D(ca,summary);
-  printf("Step %d, elapsed_time %.3f s, number of particles: %d, totoal energy: %.3f\n", a_simulazioni->step, elapsed_time, number_of_particles, total_energy);
+  printf("Step %d, DELTA_T %.6f, elapsed_time %.3f s, number of particles: %d, totoal energy: %.9f\n", a_simulazioni->step, DELTA_T, elapsed_time, number_of_particles, total_energy);
 }
 
 CALbyte ncestiArmenuNaParticella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)

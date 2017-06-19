@@ -63,15 +63,15 @@ void partilu()
       Q.vz[slot]    = calAddSubstate3Dr(u_modellu);
       Q.imove[slot] = calAddSubstate3Di(u_modellu);
 
-      calInitSubstate3Dr(u_modellu,Q.Fx[slot],   0.0);
-      calInitSubstate3Dr(u_modellu,Q.Fy[slot],   0.0);
-      calInitSubstate3Dr(u_modellu,Q.Fz[slot],   0.0);
-      calInitSubstate3Dr(u_modellu,Q.rx[slot],   PARTICLE_NODATA);
-      calInitSubstate3Dr(u_modellu,Q.ry[slot],   PARTICLE_NODATA);
-      calInitSubstate3Dr(u_modellu,Q.rz[slot],   PARTICLE_NODATA);
-      calInitSubstate3Dr(u_modellu,Q.vx[slot],   0.0);
-      calInitSubstate3Dr(u_modellu,Q.vy[slot],   0.0);
-      calInitSubstate3Dr(u_modellu,Q.vz[slot],   0.0);
+      calInitSubstate3Dr(u_modellu,Q.Fx[slot],0.0);
+      calInitSubstate3Dr(u_modellu,Q.Fy[slot],0.0);
+      calInitSubstate3Dr(u_modellu,Q.Fz[slot],0.0);
+      calInitSubstate3Dr(u_modellu,Q.rx[slot],PARTICLE_NODATA);
+      calInitSubstate3Dr(u_modellu,Q.ry[slot],PARTICLE_NODATA);
+      calInitSubstate3Dr(u_modellu,Q.rz[slot],PARTICLE_NODATA);
+      calInitSubstate3Dr(u_modellu,Q.vx[slot],0.0);
+      calInitSubstate3Dr(u_modellu,Q.vy[slot],0.0);
+      calInitSubstate3Dr(u_modellu,Q.vz[slot],0.0);
       calInitSubstate3Di(u_modellu,Q.imove[slot],PARTICLE_ABSENT);
     }
 
