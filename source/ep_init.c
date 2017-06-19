@@ -47,7 +47,7 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_
 
           calInit3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
           calInit3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
-          calInit3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z,-PARTICLE_MASS*G);
+          calInit3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
           calInit3Dr(ca, Q.rx[slot],cell_x,cell_y,cell_z,px);
           calInit3Dr(ca, Q.ry[slot],cell_x,cell_y,cell_z,py);
           calInit3Dr(ca, Q.rz[slot],cell_x,cell_y,cell_z,pz);

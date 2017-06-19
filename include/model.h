@@ -6,15 +6,21 @@
 #include <OpenCAL/cal3DIO.h>
 #include <OpenCAL/cal3DUnsafe.h>
 
+// FORCES FLAGS
+#define GRAVITY
+#define STOCKES
+#define ELASTIC
+//#define VISCOUS
 
 // ACCELERATION OF GRAVITY
 #define G 9.81
 #define AIR_VISCOSITY 1.81e-5
 #define KN 1000
+#define ETHA 0.01
 
 // PHYSICAL TIME
 //#define DELTA_T 0.001 //[s]
-#define DELTA_T 0.00005 //[s]
+#define DELTA_T 0.0001 //[s]
 
 
 // Particle mass, radius and volume
