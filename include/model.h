@@ -9,12 +9,13 @@
 
 // FORCES FLAGS
 #define GRAVITY
+#define STOCKES
 #define ELASTIC
 #define VISCOELASTIC
 
-// PHYSICAL CONSTANTS
+// ACCELERATION OF GRAVITY
 #define G 9.81
-//#define AIR_VISCOSITY 1.81e-5
+#define AIR_VISCOSITY 1.81e-5
 #define KN 1000
 #define ETHA 0.01
 
@@ -46,11 +47,11 @@
 #define Z 0.02
 
 // Domain dimensions in cells along x, y and z directions
-#define X_CELLS (int)((X)/(CELL_SIDE))
 #define Y_CELLS (int)((Y)/(CELL_SIDE))
+#define X_CELLS (int)((X)/(CELL_SIDE))
 #define Z_CELLS (int)((Z)/(CELL_SIDE))
 
-
+//#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
 #define PARTICLE_NODATA -9999    // No particle condition (used in px, py and pz)
 #define PARTICLE_BORDER -1
 #define PARTICLE_ABSENT  0
@@ -91,10 +92,10 @@ extern struct CALRun3D* a_simulazioni;
 extern CALreal elapsed_time;
 
 // Computational steps
-#define STEPS 26
+#define STEPS 10000
 
 // Verbose mode
-//#define VERBOSE
+#define VERBOSE
 
 // Functions
 void partilu();

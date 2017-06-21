@@ -181,9 +181,9 @@ void collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
 
         // update phase
-        calSet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z,calGet3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z) + delta_Fi[0]);
-        calSet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z,calGet3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z) + delta_Fi[1]);
-        calSet3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z,calGet3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z) + delta_Fi[2]);
+        calSet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fx[slot], cell_x,cell_y,cell_z) + delta_Fi[0]);
+        calSet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fy[slot], cell_x,cell_y,cell_z) + delta_Fi[1]);
+        calSet3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca, Q.Fz[slot], cell_x,cell_y,cell_z) + delta_Fi[2]);
 
       } // end of for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
 }
