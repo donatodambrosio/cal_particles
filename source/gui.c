@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include <utils_io.h>
 
 struct ViewPort{
   int w; // width
@@ -149,11 +149,11 @@ void simulationRun(void)
 {
   CALbyte again;
 
-  //simulation main loop
-  a_simulazioni->step++;
-
   //exectutes the global transition function, the steering function and check for the stop condition.
   again = calRunCAStep3D(a_simulazioni);
+
+  //simulation main loop
+  a_simulazioni->step++;
 
 #ifdef VERBOSE
   //graphic rendering
@@ -286,18 +286,36 @@ void specialKeys(int key, int x, int y){
 int main(int argc, char** argv)
 {
   partilu();
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(1200, 800);
-  glutInitWindowPosition(100, 100);
-  glutCreateWindow("cal_DEM");
-  init();
-  glutDisplayFunc(display);
-  glutReshapeFunc(reshape);
-  glutSpecialFunc(specialKeys);
-  glutKeyboardFunc(keyboard);
-  glutMouseFunc(mouse);
-  glutMainLoop();
+
+  if (argc > 1 && !strcmp(argv[1], "gl") )
+    {
+      glutInit(&argc, argv);
+      glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+      glutInitWindowSize(1200, 800);
+      glutInitWindowPosition(100, 100);
+      glutCreateWindow("cal_DEM");
+      init();
+      glutDisplayFunc(display);
+      glutReshapeFunc(reshape);
+      glutSpecialFunc(specialKeys);
+      glutKeyboardFunc(keyboard);
+      glutMouseFunc(mouse);
+      glutMainLoop();
+    }
+  else
+    {
+
+      clock_t begin = clock();
+      clock_t end = begin;
+      double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+      saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, "./data/particles_t0.txt");
+
+      calRun3D(a_simulazioni);
+
+      end =  clock();
+      time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+      saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, "./data/particles_tf.txt");
+    }
 
   return 0;
 }

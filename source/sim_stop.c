@@ -5,14 +5,8 @@ CALbyte caminalu(struct CALModel3D* modello)
 {
   CALint step = a_simulazioni->step;
 
-  if (step <= STEPS)
-    {
-#ifdef VERBOSE
-      printSummary(modello);
-#endif
-
+  if (step < STEPS)
       return CAL_FALSE;
-    }
 
   return CAL_TRUE;
 }

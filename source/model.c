@@ -17,13 +17,33 @@ CALreal elapsed_time;
 void transizioniGlobali(struct CALModel3D* modello)
 {
   calApplyElementaryProcess3D(modello, resetF);
-  calUpdate3D(modello);
+  for (int i=0; i<MAX_NUMBER_OF_PARTICLES_PER_CELL; i++)
+    {
+      calUpdateSubstate3Dr(modello, Q.Fx[i]);
+      calUpdateSubstate3Dr(modello, Q.Fy[i]);
+      calUpdateSubstate3Dr(modello, Q.Fz[i]);
+    }
 
   calApplyElementaryProcess3D(modello,collision);
-  calUpdate3D(modello);
+  for (int i=0; i<MAX_NUMBER_OF_PARTICLES_PER_CELL; i++)
+    {
+      calUpdateSubstate3Dr(modello, Q.Fx[i]);
+      calUpdateSubstate3Dr(modello, Q.Fy[i]);
+      calUpdateSubstate3Dr(modello, Q.Fz[i]);
+    }
+
 
   calApplyElementaryProcess3D(modello,movili);
-  calUpdate3D(modello);
+  for (int i=0; i<MAX_NUMBER_OF_PARTICLES_PER_CELL; i++)
+    {
+      calUpdateSubstate3Dr(modello, Q.rx[i]);
+      calUpdateSubstate3Dr(modello, Q.ry[i]);
+      calUpdateSubstate3Dr(modello, Q.rz[i]);
+      calUpdateSubstate3Dr(modello, Q.vx[i]);
+      calUpdateSubstate3Dr(modello, Q.vy[i]);
+      calUpdateSubstate3Dr(modello, Q.vz[i]);
+    }
+
 
   calApplyElementaryProcess3D(modello,moviliCazzu);
   calUpdate3D(modello);
