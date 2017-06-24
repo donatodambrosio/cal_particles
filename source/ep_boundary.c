@@ -77,11 +77,6 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int x_cell, int y_cell, int 
       nz = -1;
     }
 
-
-  nx = 0;
-  ny = 0;
-  nz = 0;
-
   for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
       calInit3Dr(ca, Q->Fx[slot],x_cell,y_cell,z_cell,0.0);

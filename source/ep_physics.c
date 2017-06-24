@@ -25,20 +25,23 @@ void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALr
       vf[i] = v0[i]+a[i]*t;
       //pf[i] = p0[i] + v0[i]*t + 0.5*a[i]*t*t;
       pf[i] = p0[i] + vf[i]*t;
+    }
 
-      if (fabs(pf[i]-p0[i]) >= CELL_SIDE)
-        {
-          pf[i] = p0[i];
-          vf[i] = v0[i];
-
+  CALreal displacement = distance(p0, pf);
+  if (displacement >= PARTICLE_RADIUS)
+    {
 #ifdef VERBOSE
-          printf("ERROR: a particle displacemnt is greater than CELL_SIDE.\n");
-          exit(EXIT_FAILURE);
+      printf("ERROR: a particle displacemnt is greater than CELL_SIDE.\n");
+      printf("F = (%f, %f, %f)\n", F[0], F[1], F[2]);
+      printf("a = (%f, %f, %f)\n", a[0], a[1], a[2]);
+      printf("p0 = (%f, %f, %f)\n", p0[0], p0[1], p0[2]);
+      printf("pf = (%f, %f, %f)\n", pf[0], pf[1], pf[2]);
+      printf("particle displacemnt = %f\n", displacement);
+      printf("CELL_SIDE = %f \n", CELL_SIDE);
 #endif
-        }
+      exit(EXIT_FAILURE);
     }
 }
-
 
 void resetF(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
@@ -46,12 +49,13 @@ void resetF(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     return;
 
   CALreal F[3];
+  CALreal gravity_force = -PARTICLE_MASS*G;
 
   F[0] = 0.0;
   F[1] = 0.0;
   F[2] = 0.0;
 #ifdef GRAVITY
-  F[2] += -PARTICLE_MASS*G;
+  F[2] = gravity_force;
 #endif
 
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)

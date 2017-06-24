@@ -9,4 +9,8 @@ CALbyte ncestiArmenuNaParticella(struct CALModel3D* ca, int cell_x, int cell_y, 
 
 CALreal distance (CALreal* p0, CALreal* p1);
 
+CALreal pointPlaneDistance(CALreal* P0, CALreal* n, CALreal* Pp);
+void reflect(CALreal* v, CALreal* n);
+void orthogonalProjectedPointToPlane(CALreal* Pi, CALreal* Pp, CALreal* n, CALreal* ri);
+
 #endif

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include <utils_io.h>
 
 struct ViewPort{
   int w; // width
@@ -76,7 +76,8 @@ void drawParticles()
         if (calGet3Di(u_modellu,Q.imove[0],cell_x,cell_y,cell_z) != PARTICLE_BORDER)
           {
             for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
-              if(calGet3Di(u_modellu,Q.imove[slot],cell_x,cell_y,cell_z) != PARTICLE_ABSENT)
+              //if(calGet3Di(u_modellu,Q.imove[slot],cell_x,cell_y,cell_z) != PARTICLE_ABSENT)
+                if(calGet3Di(u_modellu,Q.imove[slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
                 {
                   px = calGet3Dr(u_modellu,Q.rx[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
                   py = calGet3Dr(u_modellu,Q.ry[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
@@ -113,11 +114,11 @@ void display(void)
   glLoadIdentity();
   gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glPushMatrix();
-    glTranslatef(0, 0, model_view.z_trans);
-    glRotatef(model_view.x_rot, 1, 0, 0);
-    glRotatef(model_view.y_rot, 0, 1, 0);
-    glRotatef(-90,1,0,0);
-    drawParticles();
+  glTranslatef(0, 0, model_view.z_trans);
+  glRotatef(model_view.x_rot, 1, 0, 0);
+  glRotatef(model_view.y_rot, 0, 1, 0);
+  glRotatef(-90,1,0,0);
+  drawParticles();
   glPopMatrix();
 
   // axes
@@ -134,26 +135,33 @@ void display(void)
 
   glPushMatrix();
   glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
-    glRotatef(model_view.x_rot, 1, 0, 0);
-    glRotatef(model_view.y_rot, 0, 1, 0);
-    glRotatef(-90,1,0,0);
-    drawAxes();
+  glDisable(GL_LIGHTING);
+  glRotatef(model_view.x_rot, 1, 0, 0);
+  glRotatef(model_view.y_rot, 0, 1, 0);
+  glRotatef(-90,1,0,0);
+  drawAxes();
   glPopAttrib();
   glPopMatrix();
 
   glutSwapBuffers();
 }
 
-void simulationRun(void)
+CALbyte simulationStep()
 {
   CALbyte again;
+
+  //exectutes the global transition function, the steering function and check for the stop condition.
+  again = calRunCAStep3D(a_simulazioni);
 
   //simulation main loop
   a_simulazioni->step++;
 
-  //exectutes the global transition function, the steering function and check for the stop condition.
-  again = calRunCAStep3D(a_simulazioni);
+  return again;
+}
+
+void simulationRun(void)
+{
+  CALbyte again = simulationStep();
 
 #ifdef VERBOSE
   //graphic rendering
@@ -286,18 +294,47 @@ void specialKeys(int key, int x, int y){
 int main(int argc, char** argv)
 {
   partilu();
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(1200, 800);
-  glutInitWindowPosition(100, 100);
-  glutCreateWindow("cal_DEM");
-  init();
-  glutDisplayFunc(display);
-  glutReshapeFunc(reshape);
-  glutSpecialFunc(specialKeys);
-  glutKeyboardFunc(keyboard);
-  glutMouseFunc(mouse);
-  glutMainLoop();
+
+  if (argc > 1 && !strcmp(argv[1], "-gui") )
+    {
+      glutInit(&argc, argv);
+      glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+      glutInitWindowSize(1200, 800);
+      glutInitWindowPosition(100, 100);
+      glutCreateWindow("cal_DEM");
+      init();
+      glutDisplayFunc(display);
+      glutReshapeFunc(reshape);
+      glutSpecialFunc(specialKeys);
+      glutKeyboardFunc(keyboard);
+      glutMouseFunc(mouse);
+      glutMainLoop();
+    }
+  else
+    {
+      char t0_path[2048], tf_path[2048];
+      strcpy(t0_path, argv[0]);
+      t0_path[strlen(t0_path)-7] = '\0';
+      strcpy(tf_path, t0_path);
+      strcat(t0_path, "data/particles_t0.txt");
+      strcat(tf_path, "data/particles_tf.txt");
+      printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
+
+      clock_t begin = clock();
+      clock_t end = begin;
+      double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+      saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, t0_path);
+
+      //calRun3D(a_simulazioni);
+      CALbyte again; CALreal x = 0;
+      do
+          again = simulationStep();
+      while (again);
+
+      end =  clock();
+      time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+      saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, tf_path);
+    }
 
   return 0;
 }

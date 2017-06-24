@@ -1,5 +1,6 @@
 #include <ep_movili_cazzu.h>
 #include <ep_utils.h>
+#include <stdlib.h>
 
 void pezziala(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
@@ -72,13 +73,26 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
             if ((cell_x == new_cell_x) && (cell_y == new_cell_y) && (cell_z == new_cell_z))
               {
+                CALbyte sucked = CAL_FALSE;
                 int destination_slot;
                 for (destination_slot = 0; destination_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
                   if (calGetNext3Di(ca,Q.imove[destination_slot],cell_x,cell_y,cell_z) == PARTICLE_ABSENT)
                     {
                       sucala(destination_slot,source_slot,ca,cell_x,cell_y,cell_z,n);
+                      sucked = CAL_TRUE;
                       break;
                     }
+                if (sucked == CAL_FALSE)
+                  {
+#ifdef VERBOSE
+                    printf("ERROR: unable to suck a particle.\n");
+                    printf("cell_capacity: %d\n", MAX_NUMBER_OF_PARTICLES_PER_CELL);
+                    printf("current_step: %d\n", a_simulazioni->step);
+                    printf("source_slot: %d\n", source_slot);
+                    printf("destination_slot: %d\n", destination_slot);
+#endif
+                    exit(EXIT_FAILURE);
+                  }
               }
           }
 }

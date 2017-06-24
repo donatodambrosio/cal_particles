@@ -19,7 +19,12 @@ void transizioniGlobali(struct CALModel3D* modello)
   calApplyElementaryProcess3D(modello, resetF);
   calUpdate3D(modello);
 
-  calApplyElementaryProcess3D(modello,collision);
+//  calApplyElementaryProcess3D(modello,collision);
+//  calUpdate3D(modello);
+
+  calApplyElementaryProcess3D(modello,inner_collision);
+  calApplyElementaryProcess3D(modello,outer_collision);
+  calApplyElementaryProcess3D(modello,boundary_collision);
   calUpdate3D(modello);
 
   calApplyElementaryProcess3D(modello,movili);
@@ -81,8 +86,7 @@ void partilu()
   // Initial conditions
   elapsed_time = 0.0;
   calApplyElementaryProcess3D(u_modellu, mmiscali_nta_cella);
-  // ATTENZIONE, QUESTO PROCESSO ELEMENTARE DEVE AVVENIRE IN SEQUENZIALE
-  calApplyElementaryProcess3D(u_modellu, cancella_particelle_in_urto);
+  cancella_particelle_in_urto(u_modellu);
 
   // Simulation
   a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_IMPLICIT);

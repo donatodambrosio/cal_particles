@@ -9,20 +9,19 @@
 
 // FORCES FLAGS
 #define GRAVITY
-#define STOCKES
-#define ELASTIC
+//#define ELASTIC
 #define VISCOELASTIC
 
-// ACCELERATION OF GRAVITY
+// PHYSICAL CONSTANTS
 #define G 9.81
-#define AIR_VISCOSITY 1.81e-5
+//#define AIR_VISCOSITY 1.81e-5
 #define KN 1000
 #define ETHA 0.01
 
 // Particle mass, radius and volume
 #define PI 3.14159265358979
 #define PARTICLE_MASS 0.001
-#define PARTICLE_RADIUS (0.0005)
+#define PARTICLE_RADIUS 0.00025
 #define PARTICLE_VOLUME ((4.0/3.0)*PI*PARTICLE_RADIUS*PARTICLE_RADIUS*PARTICLE_RADIUS)
 
 // PHYSICAL TIME
@@ -47,11 +46,11 @@
 #define Z 0.02
 
 // Domain dimensions in cells along x, y and z directions
-#define Y_CELLS (int)((Y)/(CELL_SIDE))
 #define X_CELLS (int)((X)/(CELL_SIDE))
+#define Y_CELLS (int)((Y)/(CELL_SIDE))
 #define Z_CELLS (int)((Z)/(CELL_SIDE))
 
-//#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
+
 #define PARTICLE_NODATA -9999    // No particle condition (used in px, py and pz)
 #define PARTICLE_BORDER -1
 #define PARTICLE_ABSENT  0
