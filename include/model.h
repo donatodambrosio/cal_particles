@@ -74,7 +74,7 @@ extern CALint initial_nummber_of_particles;
 extern CALreal elapsed_time;
 
 // Computational steps
-#define STEPS 10
+#define STEPS 5000
 
 // Verbose mode
 #define VERBOSE

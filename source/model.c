@@ -5,6 +5,7 @@
 #include <ep_movili_cazzu.h>
 #include <ep_physics.h>
 #include <ep_utils.h>
+#include <utils_io.h>
 #include <sim_stop.h>
 #include <model.h>
 #include <stdlib.h>
@@ -36,6 +37,18 @@ void transizioniGlobali(struct CALModel3D* modello)
 #ifdef VERBOSE
   printSummary(modello);
 #endif
+
+  if (a_simulazioni->step % 3372 == 0)
+    {
+      CALint missing_particle = findMissingParticle(modello);
+      if (missing_particle)
+        {
+#ifdef VERBOSE
+          printf("ERROR: missing particle with ID %d\n", missing_particle);
+#endif
+          exit(EXIT_FAILURE);
+        }
+    }
 }
 
 void partilu()

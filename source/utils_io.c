@@ -1,6 +1,51 @@
 #include <utils_io.h>
 #include <stdlib.h>
 
+CALint number_of_particles = 0;
+CALreal total_energy = 0.0;
+CALreal max_velocity = 0.0;
+CALreal max_displacement = 0.0;
+
+void summary(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
+{
+  CALreal velocity[3];
+  CALreal v = 0.0;
+
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
+      {
+        number_of_particles++;
+        velocity[0] = calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
+        velocity[1] = calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
+        velocity[2] = calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
+
+        total_energy += PARTICLE_MASS*G*calGet3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z);
+        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
+        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
+        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
+
+        v = sqrt(velocity[0]*velocity[0] + velocity[1]*velocity[1] + velocity[2]*velocity[2]);
+
+        if (max_velocity < v)
+          {
+            max_velocity = v;
+            max_displacement = v*DELTA_T;
+          }
+      }
+}
+
+void printSummary(struct CALModel3D* ca)
+{
+  number_of_particles = 0;
+  total_energy = 0.0;
+  max_velocity = 0.0;
+  max_displacement = 0.0;
+
+  calApplyElementaryProcess3D(ca,summary);
+  printf("step %6d, elapsed_time: %.6f s, number_of_particles: %d, totoal_energy: %.9f, max_v: %.6f, max_displacement: %.6f\n", a_simulazioni->step, elapsed_time, number_of_particles, total_energy, max_velocity, max_displacement);
+}
+
+
 void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, double CPU_time, char* path)
 {
   FILE* f;
