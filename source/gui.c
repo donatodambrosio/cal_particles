@@ -73,15 +73,15 @@ void drawParticles()
   for (cell_x=0; cell_x<X_CELLS; cell_x++)
     for (cell_y=0; cell_y<Y_CELLS; cell_y++)
       for (cell_z=0; cell_z<Z_CELLS; cell_z++)
-        if (calGet3Di(u_modellu,Q.imove[0],cell_x,cell_y,cell_z) != PARTICLE_BORDER)
+        if (calGet3Di(u_modellu,Q.ID[0],cell_x,cell_y,cell_z) != BORDER_ID)
           {
             for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
-              //if(calGet3Di(u_modellu,Q.imove[slot],cell_x,cell_y,cell_z) != PARTICLE_ABSENT)
-                if(calGet3Di(u_modellu,Q.imove[slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
+              //if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) != PARTICLE_ABSENT)
+                if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
                 {
-                  px = calGet3Dr(u_modellu,Q.rx[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
-                  py = calGet3Dr(u_modellu,Q.ry[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
-                  pz = calGet3Dr(u_modellu,Q.rz[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
+                  px = calGet3Dr(u_modellu,Q.px[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
+                  py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
+                  pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
 
                   glPushMatrix();
                   glTranslatef(-X_CELLS/2, -Y_CELLS/2 , -Z_CELLS/2);

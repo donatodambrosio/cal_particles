@@ -12,17 +12,17 @@ void summary(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
   CALreal v = 0.0;
 
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-    if (calGet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
+    if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
       {
         number_of_particles++;
-        velocity[0] = calGet3Dr(ca, Q.vx[slot], cell_x, cell_y, cell_z);
-        velocity[1] = calGet3Dr(ca, Q.vy[slot], cell_x, cell_y, cell_z);
-        velocity[2] = calGet3Dr(ca, Q.vz[slot], cell_x, cell_y, cell_z);
+        velocity[0] = calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
+        velocity[1] = calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
+        velocity[2] = calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
 
-        total_energy += PARTICLE_MASS*G*calGet3Dr(ca, Q.rz[slot], cell_x, cell_y, cell_z);
-        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca, Q.vx[slot], cell_x, cell_y, cell_z)*calGet3Dr(ca, Q.vx[slot], cell_x, cell_y, cell_z);
-        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca, Q.vy[slot], cell_x, cell_y, cell_z)*calGet3Dr(ca, Q.vy[slot], cell_x, cell_y, cell_z);
-        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca, Q.vz[slot], cell_x, cell_y, cell_z)*calGet3Dr(ca, Q.vz[slot], cell_x, cell_y, cell_z);
+        total_energy += PARTICLE_MASS*G*calGet3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z);
+        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
+        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
+        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
 
         v = sqrt(velocity[0]*velocity[0] + velocity[1]*velocity[1] + velocity[2]*velocity[2]);
 
@@ -42,13 +42,13 @@ void printSummary(struct CALModel3D* ca)
   max_displacement = 0.0;
 
   calApplyElementaryProcess3D(ca,summary);
-  printf("Step %d, DELTA_T: %.6f, elapsed_time: %.3f s, number_of_particles: %d, totoal_energy: %.9f, max_v: %.6f, max_displacement: %.6f\n", a_simulazioni->step, DELTA_T, elapsed_time, number_of_particles, total_energy, max_velocity, max_displacement);
+  printf("step %6d, elapsed_time: %.6f s, number_of_particles: %d, totoal_energy: %.9f, max_v: %.6f, max_displacement: %.6f\n", a_simulazioni->step, elapsed_time, number_of_particles, total_energy, max_velocity, max_displacement);
 }
 
 CALbyte ncestiArmenuNaParticella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-    if (calGetX3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z,n) == PARTICLE_PRESENT)
+    if (calGetX3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z,n) > NULL_ID)
       return CAL_TRUE;
 
   return CAL_FALSE;

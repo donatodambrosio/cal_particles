@@ -7,14 +7,11 @@
 #include <OpenCAL/cal3DUnsafe.h>
 #include <math.h>
 
-// FORCES FLAGS
+// PHYSICAL FLAGS AND CONSTANTS
+// #define AIR_VISCOSITY 1.81e-5
 #define GRAVITY
-//#define ELASTIC
-#define VISCOELASTIC
-
-// PHYSICAL CONSTANTS
 #define G 9.81
-//#define AIR_VISCOSITY 1.81e-5
+#define VISCOELASTIC
 #define KN 1000
 #define ETHA 0.01
 
@@ -34,64 +31,50 @@
 #define KEPLER_OCCUPANCY_FACTOR (0.74)
 #define MAX_OCCUPANCY_VOLUME ((KEPLER_OCCUPANCY_FACTOR)*(CELL_VOLUME))
 
-// max allowed velocity
-// #define V_MAX 0.9*CELL_SIDE/DELTA_T
-
 // Max number of particles per cell according to Kepler's conjecture
 #define MAX_NUMBER_OF_PARTICLES_PER_CELL  (int)(((MAX_OCCUPANCY_VOLUME)/(PARTICLE_VOLUME))+1)
 
-// Domain dimensions in m
+// Domain dimensions in m and in cells along x, y and z directions
 #define X 0.02
 #define Y 0.02
 #define Z 0.02
-
-// Domain dimensions in cells along x, y and z directions
 #define X_CELLS (int)((X)/(CELL_SIDE))
 #define Y_CELLS (int)((Y)/(CELL_SIDE))
 #define Z_CELLS (int)((Z)/(CELL_SIDE))
 
+// SLOT (or PARTICLE) IDs
+#define BORDER_ID -1            // BORDER ID
+#define NULL_ID 0               // NO PARTICLE IN SLOT
+#define DEFAULT_PARTICLE_ID 1   // DEFAULT PARTICLE ID
 
-#define PARTICLE_NODATA -9999    // No particle condition (used in px, py and pz)
-#define PARTICLE_BORDER -1
-#define PARTICLE_ABSENT  0
-#define PARTICLE_PRESENT 1
-
-
-// Particles are randomly distributed on the 20% top layers
+// Particles are randomly distributed on the CELL_FILL_RATE*MAX_NUMBER_OF_PARTICLES_PER_CELL top layers
 #define TOP_LAYERS      (Z_CELLS) - 0.4 * (Z_CELLS)
 #define CELL_FILL_RATE  0.1 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
-//Sottostati
+//SUBSTATES
 struct Substates
 {
-  // struct CALSubstate3Dr *px[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  // struct CALSubstate3Dr *py[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  // struct CALSubstate3Dr *pz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  // struct CALSubstate3Dr *vx[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  // struct CALSubstate3Dr *vy[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  // struct CALSubstate3Dr *vz[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-  // struct CALSubstate3Di *imove[MAX_NUMBER_OF_PARTICLES_PER_CELL];
-
   struct CALSubstate3Dr **Fx;
   struct CALSubstate3Dr **Fy;
   struct CALSubstate3Dr **Fz;
-  struct CALSubstate3Dr **rx;
-  struct CALSubstate3Dr **ry;
-  struct CALSubstate3Dr **rz;
+  struct CALSubstate3Dr **px;
+  struct CALSubstate3Dr **py;
+  struct CALSubstate3Dr **pz;
   struct CALSubstate3Dr **vx;
   struct CALSubstate3Dr **vy;
   struct CALSubstate3Dr **vz;
-  struct CALSubstate3Di **imove;
+  struct CALSubstate3Di **ID;
 };
 
 // Main objcts
 extern struct CALModel3D* u_modellu;
 extern struct Substates Q;
 extern struct CALRun3D* a_simulazioni;
+extern CALint initial_nummber_of_particles;
 extern CALreal elapsed_time;
 
 // Computational steps
-#define STEPS 10000
+#define STEPS 10
 
 // Verbose mode
 #define VERBOSE

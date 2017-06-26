@@ -59,7 +59,7 @@ void resetF(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 #endif
 
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-    if (calGet3Di(ca, Q.imove[slot],cell_x,cell_y,cell_z) == PARTICLE_PRESENT)
+    if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
       {
         calSet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z,F[0]);
         calSet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z,F[1]);

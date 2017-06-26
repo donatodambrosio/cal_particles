@@ -1,65 +1,65 @@
 #include <ep_boundary.h>
 
-void mb(struct CALModel3D* ca, struct Substates *Q, int x_cell, int y_cell, int z_cell)
+void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int cell_z)
 {
   CALreal x, y, z, nx, ny, nz;
 
-  x  = PARTICLE_NODATA;
-  y  = PARTICLE_NODATA;
-  z  = PARTICLE_NODATA;
-  nx = PARTICLE_NODATA;
-  ny = PARTICLE_NODATA;
-  nz = PARTICLE_NODATA;
+  x  = 0.0;
+  y  = 0.0;
+  z  = 0.0;
+  nx = 0.0;
+  ny = 0.0;
+  nz = 0.0;
 
   // x_cell = 0 (i.e. x = CELL_SIDE)
-  if (x_cell == 0)
+  if (cell_x == 0)
     {
       x = CELL_SIDE;
-      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
-      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      y = (cell_y * CELL_SIDE) + CELL_SIDE/2;
+      z = (cell_z * CELL_SIDE) + CELL_SIDE/2;
       nx = 1;
       ny = 0;
       nz = 0;
     }
 
   // x_cell = X_CELLS-1 (i.e. x = (X_CELLS-1)*CELL_SIDE)
-  if (x_cell == X_CELLS-1)
+  if (cell_x == X_CELLS-1)
     {
       x = (X_CELLS-1)*CELL_SIDE;
-      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
-      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      y = (cell_y * CELL_SIDE) + CELL_SIDE/2;
+      z = (cell_z * CELL_SIDE) + CELL_SIDE/2;
       nx = -1;
       ny = 0;
       nz = 0;
     }
 
   // y_cell = 0 (i.e. y = CELL_SIDE)
-  if (y_cell == 0)
+  if (cell_y == 0)
     {
-      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
+      x = (cell_x * CELL_SIDE) + CELL_SIDE/2;
       y = CELL_SIDE;
-      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      z = (cell_z * CELL_SIDE) + CELL_SIDE/2;
       nx = 0;
       ny = 1;
       nz = 0;
     }
 
   // y_cell = Y_CELLS-1 (i.e. x = (Y_CELLS-1)*CELL_SIDE)
-  if (y_cell == Y_CELLS-1)
+  if (cell_y == Y_CELLS-1)
     {
-      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
+      x = (cell_x * CELL_SIDE) + CELL_SIDE/2;
       y = (Y_CELLS-1)*CELL_SIDE;
-      z = (z_cell * CELL_SIDE) + CELL_SIDE/2;
+      z = (cell_z * CELL_SIDE) + CELL_SIDE/2;
       nx = 0;
       ny = -1;
       nz = 0;
     }
 
   // z_cell = 0 (i.e. z = CELL_SIDE)
-  if (z_cell == 0)
+  if (cell_z == 0)
     {
-      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
-      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
+      x = (cell_x * CELL_SIDE) + CELL_SIDE/2;
+      y = (cell_y * CELL_SIDE) + CELL_SIDE/2;
       z = CELL_SIDE;
       nx = 0;
       ny = 0;
@@ -67,10 +67,10 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int x_cell, int y_cell, int 
     }
 
   // z_cell = Z_CELLS-1 (i.e. z = (Z_CELLS-1)*CELL_SIDE)
-  if (z_cell == Z_CELLS-1)
+  if (cell_z == Z_CELLS-1)
     {
-      x = (x_cell * CELL_SIDE) + CELL_SIDE/2;
-      y = (y_cell * CELL_SIDE) + CELL_SIDE/2;
+      x = (cell_x * CELL_SIDE) + CELL_SIDE/2;
+      y = (cell_y * CELL_SIDE) + CELL_SIDE/2;
       z = (Z_CELLS-1)*CELL_SIDE;
       nx = 0;
       ny = 0;
@@ -79,16 +79,16 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int x_cell, int y_cell, int 
 
   for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
-      calInit3Dr(ca, Q->Fx[slot],x_cell,y_cell,z_cell,0.0);
-      calInit3Dr(ca, Q->Fy[slot],x_cell,y_cell,z_cell,0.0);
-      calInit3Dr(ca, Q->Fz[slot],x_cell,y_cell,z_cell,0.0);
-      calInit3Dr(ca, Q->rx[slot],x_cell,y_cell,z_cell,x);
-      calInit3Dr(ca, Q->ry[slot],x_cell,y_cell,z_cell,y);
-      calInit3Dr(ca, Q->rz[slot],x_cell,y_cell,z_cell,z);
-      calInit3Dr(ca, Q->vx[slot],x_cell,y_cell,z_cell,nx);
-      calInit3Dr(ca, Q->vy[slot],x_cell,y_cell,z_cell,ny);
-      calInit3Dr(ca, Q->vz[slot],x_cell,y_cell,z_cell,nz);
-      calInit3Di(ca, Q->imove[slot],x_cell,y_cell,z_cell,PARTICLE_BORDER);
+      calInit3Dr(ca, Q->Fx[slot],cell_x,cell_y,cell_z,0.0);
+      calInit3Dr(ca, Q->Fy[slot],cell_x,cell_y,cell_z,0.0);
+      calInit3Dr(ca, Q->Fz[slot],cell_x,cell_y,cell_z,0.0);
+      calInit3Dr(ca, Q->px[slot],cell_x,cell_y,cell_z,x);
+      calInit3Dr(ca, Q->py[slot],cell_x,cell_y,cell_z,y);
+      calInit3Dr(ca, Q->pz[slot],cell_x,cell_y,cell_z,z);
+      calInit3Dr(ca, Q->vx[slot],cell_x,cell_y,cell_z,nx);
+      calInit3Dr(ca, Q->vy[slot],cell_x,cell_y,cell_z,ny);
+      calInit3Dr(ca, Q->vz[slot],cell_x,cell_y,cell_z,nz);
+      calInit3Di(ca, Q->ID[slot],cell_x,cell_y,cell_z,BORDER_ID);
     }
 }
 
