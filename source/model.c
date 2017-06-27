@@ -29,6 +29,7 @@ void transizioniGlobali(struct CALModel3D* modello)
   calApplyElementaryProcess3D(modello,movili);
   calUpdate3D(modello);
 
+
   calApplyElementaryProcess3D(modello,moviliCazzu);
   calUpdate3D(modello);
 
@@ -38,14 +39,13 @@ void transizioniGlobali(struct CALModel3D* modello)
   printSummary(modello);
 #endif
 
-  if (a_simulazioni->step % 3372 == 0)
+  CALint S = INTEGRITY_CHECK_STEPS;
+  if (a_simulazioni->step % S == 0)
     {
       CALint missing_particle = findMissingParticle(modello);
       if (missing_particle)
         {
-#ifdef VERBOSE
-          printf("ERROR: missing particle with ID %d\n", missing_particle);
-#endif
+          printf("ERROR: missing particle with ID %d\n", a_simulazioni->step);
           exit(EXIT_FAILURE);
         }
     }
@@ -104,4 +104,9 @@ void partilu()
   a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_IMPLICIT);
   calRunAddGlobalTransitionFunc3D(a_simulazioni, transizioniGlobali);
   calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
+
+#ifdef VERBOSE
+  printf("The 3D particles computational model\n");
+  printf("The system will be simulated for %f s, subdivided in %d steps, each one corresponding to %f s\n", TOTAL_SIMULATION_TIME, STEPS, DELTA_T);
+#endif
 }

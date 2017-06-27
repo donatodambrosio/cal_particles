@@ -3,18 +3,16 @@
 #include <math.h>
 #include <stdlib.h>
 
+// #define AIR_VISCOSITY 1.81e-5
+
 void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALreal* pf, CALreal* vf)
 {
-  CALreal a[3];
 //  CALreal F[3];
-
-  // F[0] =  0;
-  // F[1] =  0;
-  // F[2] = -m*G;
-
 //  F[0] =  m*0 - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[0];
 //  F[1] =  m*0 - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[1];
 //  F[2] = -m*G - 6*M_PI*AIR_VISCOSITY*PARTICLE_RADIUS*v0[2];
+
+  CALreal a[3];
 
   a[0] = F[0]/m;
   a[1] = F[1]/m;
@@ -30,8 +28,8 @@ void applyForce(CALreal* F, CALreal* p0, CALreal* v0, CALreal m, CALreal t, CALr
   CALreal displacement = distance(p0, pf);
   if (displacement >= PARTICLE_RADIUS)
     {
-#ifdef VERBOSE
       printf("ERROR: a particle displacemnt is greater than CELL_SIDE.\n");
+#ifdef VERBOSE
       printf("F = (%f, %f, %f)\n", F[0], F[1], F[2]);
       printf("a = (%f, %f, %f)\n", a[0], a[1], a[2]);
       printf("p0 = (%f, %f, %f)\n", p0[0], p0[1], p0[2]);

@@ -67,7 +67,7 @@ void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, dou
   fprintf(f, "Current step: %d\n", step);
   fprintf(f, "Physical elapsed time: %.9f\n", elapsed_time);
   fprintf(f, "CPU time: %.9f\n", CPU_time);
-  fprintf(f, "id     \tr[0]     \tr[1]     \tr[2]     \tv[0]     \tv[1]     \tv[2]     \tF[0]     \tF[1]     \tF[2]\n");
+  fprintf(f, "id     \tp[0]     \tp[1]     \tp[2]     \tv[0]     \tv[1]     \tv[2]     \tF[0]     \tF[1]     \tF[2]\n");
 
   for (int cell_x=0; cell_x<ca->rows; cell_x++)
     for (int cell_y=0; cell_y<ca->columns; cell_y++)

@@ -47,7 +47,7 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_
   //if (cell_x < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER)
   //if (cell_y < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER)
   if (cell_z < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER_ID)
-    //if (cell_x < TOP_LAYERS || cell_y < TOP_LAYERS || cell_z < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER)
+  //if (cell_x < TOP_LAYERS || cell_y < TOP_LAYERS || cell_z < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER)
     return;
 
   CALreal c;
@@ -78,9 +78,23 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_
     }
 }
 
+void pezzialaMo(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int slot)
+{
+  calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
+}
+
 void cancella_particelle_in_urto(struct CALModel3D* ca)
 {
-  CALreal p[3], pj[3], pn[3];
+  CALreal p[3], pj[3], pn[3], Nn[3];
   CALbyte particle_OK = CAL_TRUE;
   CALint particle_id = 0;
 
@@ -104,16 +118,7 @@ void cancella_particelle_in_urto(struct CALModel3D* ca)
 
                     if (distance(p, pj) <= 2.0*PARTICLE_RADIUS)
                       {
-                        calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
+                        pezzialaMo(ca,cell_x,cell_y,cell_z,slot);
                         particle_OK = CAL_FALSE;
                       }
                   }
@@ -125,19 +130,13 @@ void cancella_particelle_in_urto(struct CALModel3D* ca)
                     pn[1] = calGetX3Dr(ca,Q.py[0],cell_x,cell_y,cell_z,n);
                     pn[2] = calGetX3Dr(ca,Q.pz[0],cell_x,cell_y,cell_z,n);
 
-                    //if (distance(p, pn) <= PARTICLE_RADIUS)
-                    if (fabs(p[0]-pn[0]) <= PARTICLE_RADIUS || fabs(p[1]-pn[1]) <= PARTICLE_RADIUS || fabs(p[2]-pn[2]) <= PARTICLE_RADIUS )
+                    Nn[0] = calGetX3Dr(ca,Q.vx[0],cell_x,cell_y,cell_z,n);
+                    Nn[1] = calGetX3Dr(ca,Q.vy[0],cell_x,cell_y,cell_z,n);
+                    Nn[2] = calGetX3Dr(ca,Q.vz[0],cell_x,cell_y,cell_z,n);
+
+                    if (pointPlaneDistance(p, pn, Nn) < PARTICLE_RADIUS)
                       {
-                        calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z,0.0);
-                        calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
+                        pezzialaMo(ca,cell_x,cell_y,cell_z,slot);
                         particle_OK = CAL_FALSE;
                       }
                   }
@@ -151,16 +150,7 @@ void cancella_particelle_in_urto(struct CALModel3D* ca)
 
                         if (distance(p, pn) <= 2.0*PARTICLE_RADIUS)
                           {
-                            calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z,0.0);
-                            calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
+                            pezzialaMo(ca,cell_x,cell_y,cell_z,slot);
                             particle_OK = CAL_FALSE;
                           }
                       }

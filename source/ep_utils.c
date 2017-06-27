@@ -17,7 +17,7 @@ CALreal distance (CALreal* p0, CALreal* p1)
               (p0[2]-p1[2])*(p0[2]-p1[2]));
 }
 
-CALreal pointPlaneDistance(CALreal* P0, CALreal* n, CALreal* Pp)
+CALreal pointPlaneDistance(CALreal* P0, CALreal* Pp, CALreal* n)
 {
   return fabs(n[0]*P0[0] + n[1]*P0[1] + n[2]*P0[2] - n[0]*Pp[0] - n[1]*Pp[1] - n[2]*Pp[2]);
 }

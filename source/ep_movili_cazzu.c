@@ -84,8 +84,8 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     }
                 if (sucked == CAL_FALSE)
                   {
-#ifdef VERBOSE
                     printf("ERROR: unable to suck a particle.\n");
+#ifdef VERBOSE
                     printf("cell_capacity: %d\n", MAX_NUMBER_OF_PARTICLES_PER_CELL);
                     printf("current_step: %d\n", a_simulazioni->step);
                     printf("source_slot: %d\n", source_slot);

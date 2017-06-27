@@ -76,13 +76,17 @@ void drawParticles()
         if (calGet3Di(u_modellu,Q.ID[0],cell_x,cell_y,cell_z) != BORDER_ID)
           {
             for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
-              //if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) != PARTICLE_ABSENT)
-                if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
+              if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
                 {
                   px = calGet3Dr(u_modellu,Q.px[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
                   py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
                   pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
 
+/*                  if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == 614)
+                    glColor3f(1,0,0);
+                  else
+                    glColor3f(0,1,0);
+*/
                   glPushMatrix();
                   glTranslatef(-X_CELLS/2, -Y_CELLS/2 , -Z_CELLS/2);
                   glTranslated(px,py,pz);
@@ -188,7 +192,7 @@ void simulationRun(void)
   char winwow_title[256];
   char steps_cstr[64];
   strcpy(winwow_title, "cal_DEM - step ");
-  sprintf(steps_cstr, "%d, elapsed_time %.3f s", a_simulazioni->step, elapsed_time);
+  sprintf(steps_cstr, "%d (of %d), elapsed_time %.3f s (of %f s)", a_simulazioni->step, STEPS, elapsed_time, TOTAL_SIMULATION_TIME);
   strcat(winwow_title, steps_cstr);
   glutSetWindowTitle(winwow_title);
 }
@@ -214,9 +218,8 @@ void init(void)
   model_view.y_rot = 0.0;
   model_view.z_trans = 0.0;
 
-  printf("The 3D particles computational model\n");
-  printf("Left click on the graphic window to start the simulation\n");
-  printf("Right click on the graphic window to stop the simulation\n");
+  printf("Press SPACE or ENTER (or left click on the graphic window) to start the simulation\n");
+  printf("Press P or p (or rght click on the graphic window) to stop the simulation\n");
 }
 
 void reshape(int w, int h)
@@ -249,22 +252,23 @@ void keyboard(unsigned char key, int x, int y)
 {
   switch(key)
     {
-    case ' ':
+    case 13: //ENTER
+    case ' '://SPACE
       mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, x, y);
       break;
+    case 'P':
     case 'p':
       mouse(GLUT_RIGHT_BUTTON, GLUT_DOWN, x, y);
       break;
     case 27: //ESC
       exit(EXIT_SUCCESS);
     }
-
 }
 
 void specialKeys(int key, int x, int y){
 
   //GLubyte specialKey = glutGetModifiers();
-  const GLfloat x_rot = 5.0, y_rot = 5.0, z_trans = 5.0;
+  const GLfloat x_rot = 1.0, y_rot = 1.0, z_trans = 1.0;
 
   if (key==GLUT_KEY_F9)
     mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, x, y);
@@ -318,8 +322,9 @@ int main(int argc, char** argv)
       strcpy(tf_path, t0_path);
       strcat(t0_path, "data/particles_t0.txt");
       strcat(tf_path, "data/particles_tf.txt");
+#ifdef VERBOSE
       printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
-
+#endif
       clock_t begin = clock();
       clock_t end = begin;
       double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
