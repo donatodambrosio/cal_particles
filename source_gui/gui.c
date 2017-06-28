@@ -82,7 +82,7 @@ void drawParticles()
                   py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
                   pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
 
-/*                  if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == 614)
+                  /*                  if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == 614)
                     glColor3f(1,0,0);
                   else
                     glColor3f(0,1,0);
@@ -299,47 +299,18 @@ int main(int argc, char** argv)
 {
   partilu();
 
-  if (argc > 1 && !strcmp(argv[1], "-gui") )
-    {
-      glutInit(&argc, argv);
-      glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-      glutInitWindowSize(1200, 800);
-      glutInitWindowPosition(100, 100);
-      glutCreateWindow("cal_DEM");
-      init();
-      glutDisplayFunc(display);
-      glutReshapeFunc(reshape);
-      glutSpecialFunc(specialKeys);
-      glutKeyboardFunc(keyboard);
-      glutMouseFunc(mouse);
-      glutMainLoop();
-    }
-  else
-    {
-      char t0_path[2048], tf_path[2048];
-      strcpy(t0_path, argv[0]);
-      t0_path[strlen(t0_path)-7] = '\0';
-      strcpy(tf_path, t0_path);
-      strcat(t0_path, "data/particles_t0.txt");
-      strcat(tf_path, "data/particles_tf.txt");
-#ifdef VERBOSE
-      printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
-#endif
-      clock_t begin = clock();
-      clock_t end = begin;
-      double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-      saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, t0_path);
-
-      //calRun3D(a_simulazioni);
-      CALbyte again; CALreal x = 0;
-      do
-          again = simulationStep();
-      while (again);
-
-      end =  clock();
-      time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-      saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, tf_path);
-    }
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+  glutInitWindowSize(1200, 800);
+  glutInitWindowPosition(100, 100);
+  glutCreateWindow("cal_DEM");
+  init();
+  glutDisplayFunc(display);
+  glutReshapeFunc(reshape);
+  glutSpecialFunc(specialKeys);
+  glutKeyboardFunc(keyboard);
+  glutMouseFunc(mouse);
+  glutMainLoop();
 
   return 0;
 }
