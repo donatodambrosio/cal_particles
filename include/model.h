@@ -8,7 +8,7 @@
 #include <math.h>
 
 // PHYSICAL CONSTANTS AND FLAGS
-#define KN 50000
+#define KN 500//50000
 #define GRAVITY
 #define G 9.81
 #define VISCOELASTIC
@@ -50,7 +50,7 @@
 #define DELTA_T (0.05 * sqrt(PARTICLE_MASS/KN)) //[s]
 #define TOTAL_SIMULATION_TIME 0.5 //[s]
 #define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
-#define INTEGRITY_CHECK_STEPS STEPS/100
+#define INTEGRITY_CHECK_STEPS STEPS/10
 
 // Verbose mode
 #define VERBOSE

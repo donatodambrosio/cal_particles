@@ -47,6 +47,7 @@ include_directories(
 
 if(GUI)
 include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/include_gui
   ${OPENGL_INCLUDE_DIRS}
   ${GLUT_INCLUDE_DIR}
   )

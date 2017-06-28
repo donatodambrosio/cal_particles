@@ -16,18 +16,49 @@ struct Substates Q;
 CALint initial_nummber_of_particles;
 CALreal elapsed_time;
 
+void updateF(struct CALModel3D* ca)
+{
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    {
+      calUpdateSubstate3Dr(ca,Q.Fx[slot]);
+      calUpdateSubstate3Dr(ca,Q.Fy[slot]);
+      calUpdateSubstate3Dr(ca,Q.Fz[slot]);
+    }
+}
+
+void updateP(struct CALModel3D* ca)
+{
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    {
+      calUpdateSubstate3Dr(ca,Q.px[slot]);
+      calUpdateSubstate3Dr(ca,Q.py[slot]);
+      calUpdateSubstate3Dr(ca,Q.pz[slot]);
+    }
+}
+
+void updateV(struct CALModel3D* ca)
+{
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    {
+      calUpdateSubstate3Dr(ca,Q.vx[slot]);
+      calUpdateSubstate3Dr(ca,Q.vy[slot]);
+      calUpdateSubstate3Dr(ca,Q.vz[slot]);
+    }
+}
+
 void transizioniGlobali(struct CALModel3D* modello)
 {
   calApplyElementaryProcess3D(modello, resetF);
-  calUpdate3D(modello);
+  updateF(modello);
 
   calApplyElementaryProcess3D(modello,inner_collision);
   calApplyElementaryProcess3D(modello,outer_collision);
   calApplyElementaryProcess3D(modello,boundary_collision);
-  calUpdate3D(modello);
+  updateF(modello);
 
   calApplyElementaryProcess3D(modello,movili);
-  calUpdate3D(modello);
+  updateP(modello);
+  updateV(modello);
 
 
   calApplyElementaryProcess3D(modello,moviliCazzu);
