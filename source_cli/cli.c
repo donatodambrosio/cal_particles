@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include <utils_io.h>
+#include <omp.h>
 
 CALbyte simulationStep()
 {
@@ -20,6 +21,8 @@ CALbyte simulationStep()
 
 int main(int argc, char** argv)
 {
+  double time_spent = 0.0;
+
   partilu();
 
   char t0_path[2048], tf_path[2048];
@@ -31,19 +34,33 @@ int main(int argc, char** argv)
 #ifdef VERBOSE
   printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
 #endif
-  clock_t begin = clock();
-  clock_t end = begin;
-  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+
   saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, t0_path);
 
+#ifdef OMP
+  omp_set_num_threads(2);
+
+  double begin, end;
+  begin = omp_get_wtime();
+#else
+  clock_t begin = clock();
+  clock_t end = begin;
+#endif
+
   //calRun3D(a_simulazioni);
-  CALbyte again; CALreal x = 0;
+  CALbyte again;
   do
     again = simulationStep();
   while (again);
 
-  end =  clock();
+#ifdef OMP
+  end = omp_get_wtime();
+  time_spent = end - begin;
+#else
+  end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+#endif
+
   saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, tf_path);
 
   return 0;

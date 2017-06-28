@@ -76,7 +76,7 @@ void transizioniGlobali(struct CALModel3D* modello)
       CALint missing_particle = findMissingParticle(modello);
       if (missing_particle)
         {
-          printf("ERROR: missing particle with ID %d\n", a_simulazioni->step);
+          printf("ERROR: missing particle with ID %d\n", missing_particle);
           exit(EXIT_FAILURE);
         }
     }

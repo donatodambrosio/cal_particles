@@ -1,10 +1,17 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#ifdef OMP
+#include <OpenCAL-OMP/cal3D.h>
+#include <OpenCAL-OMP/cal3DRun.h>
+#include <OpenCAL-OMP/cal3DIO.h>
+#include <OpenCAL-OMP/cal3DUnsafe.h>
+#else
 #include <OpenCAL/cal3D.h>
 #include <OpenCAL/cal3DRun.h>
 #include <OpenCAL/cal3DIO.h>
 #include <OpenCAL/cal3DUnsafe.h>
+#endif
 #include <math.h>
 
 // PHYSICAL CONSTANTS AND FLAGS
@@ -48,12 +55,9 @@
 
 // PHYSICAL TIME AND COMPUTATIONAL STEPS
 #define DELTA_T (0.05 * sqrt(PARTICLE_MASS/KN)) //[s]
-#define TOTAL_SIMULATION_TIME 0.5 //[s]
+#define TOTAL_SIMULATION_TIME 0.05 //[s]
 #define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
-#define INTEGRITY_CHECK_STEPS STEPS/10
-
-// Verbose mode
-#define VERBOSE
+#define INTEGRITY_CHECK_STEPS STEPS
 
 //SUBSTATES
 struct Substates
