@@ -30,6 +30,10 @@ file (GLOB CLI_SRC
   ${CMAKE_CURRENT_SOURCE_DIR}/source_cli/*.c
   )
 
+file(GLOB GUI_HDR
+    ${CMAKE_CURRENT_SOURCE_DIR}/include_gui/*.h
+    )
+
 file (GLOB GUI_SRC
   ${CMAKE_CURRENT_SOURCE_DIR}/source_gui/*.c
   )
@@ -54,7 +58,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(GUI)
     message(STATUS "Building with GUI support...")
-    add_executable(${PROJECT_NAME} ${GUI_SRC} ${SRC} ${HDR})
+    add_executable(${PROJECT_NAME} ${GUI_SRC} ${GUI_HDR} ${SRC} ${HDR})
     target_link_libraries(${PROJECT_NAME} ${OPENCAL_LIBRARIES} ${M_LIB} ${OPENGL_LIBRARIES} ${GLUT_glut_LIBRARY})
 else() # CLI
     message(STATUS "Building with CLI support...")
