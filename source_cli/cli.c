@@ -38,8 +38,6 @@ int main(int argc, char** argv)
   saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, t0_path);
 
 #ifdef OMP
-  omp_set_num_threads(2);
-
   double begin, end;
   begin = omp_get_wtime();
 #else

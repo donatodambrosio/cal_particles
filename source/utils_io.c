@@ -14,23 +14,30 @@ void summary(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
       {
-        number_of_particles++;
+#pragma omp critical
+        {
+          number_of_particles++;
+        }
         velocity[0] = calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
         velocity[1] = calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
         velocity[2] = calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
-
-        total_energy += PARTICLE_MASS*G*calGet3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z);
-        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
-        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
-        total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
-
+#pragma omp critical
+        {
+          total_energy += PARTICLE_MASS*G*calGet3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z);
+          total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
+          total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
+          total_energy += 0.5*PARTICLE_MASS*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z)*calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
+        }
         v = sqrt(velocity[0]*velocity[0] + velocity[1]*velocity[1] + velocity[2]*velocity[2]);
 
-        if (max_velocity < v)
-          {
-            max_velocity = v;
-            max_displacement = v*DELTA_T;
-          }
+#pragma omp critical
+        {
+          if (max_velocity < v)
+            {
+              max_velocity = v;
+              max_displacement = v*DELTA_T;
+            }
+        }
       }
 }
 

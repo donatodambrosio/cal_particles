@@ -2,6 +2,8 @@
 #include <ep_utils.h>
 #include <stdlib.h>
 
+unsigned int seed = 1;
+
 void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
 /*
@@ -53,12 +55,12 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_
   CALreal c;
   for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
-      c = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
+      c = (CALreal)rand_r(&seed)/(CALreal)(RAND_MAX); // 0 <= c <= 1
       if (c < CELL_FILL_RATE)
         {
-          CALreal cx = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
-          CALreal cy = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
-          CALreal cz = (CALreal)rand()/(CALreal)(RAND_MAX); // 0 <= c <= 1
+          CALreal cx = (CALreal)rand_r(&seed)/(CALreal)(RAND_MAX); // 0 <= c <= 1
+          CALreal cy = (CALreal)rand_r(&seed)/(CALreal)(RAND_MAX); // 0 <= c <= 1
+          CALreal cz = (CALreal)rand_r(&seed)/(CALreal)(RAND_MAX); // 0 <= c <= 1
 
           CALreal px = CELL_SIDE * (cell_x + cx);
           CALreal py = CELL_SIDE * (cell_y + cy);
@@ -76,6 +78,15 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_
           calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,DEFAULT_PARTICLE_ID);
         }
     }
+}
+
+void mmiscali_nta_cella_seriale(struct CALModel3D* ca)
+{
+  int i, j, k;
+  for (i = 0; i < ca->rows; i++)
+    for (j = 0; j < ca->columns; j++)
+      for (k = 0; k < ca->slices; k++)
+        mmiscali_nta_cella(ca, i, j, k);
 }
 
 void pezzialaMo(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int slot)

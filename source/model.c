@@ -128,7 +128,8 @@ void partilu()
   // Initial conditions
   initial_nummber_of_particles = 0;
   elapsed_time = 0.0;
-  calApplyElementaryProcess3D(u_modellu, mmiscali_nta_cella);
+  //calApplyElementaryProcess3D(u_modellu, mmiscali_nta_cella);
+  mmiscali_nta_cella_seriale(u_modellu);
   cancella_particelle_in_urto(u_modellu);
 
   // Simulation
@@ -138,6 +139,9 @@ void partilu()
 
 #ifdef VERBOSE
   printf("The 3D particles computational model\n");
-  printf("The system will be simulated for %f s, subdivided in %d steps, each one corresponding to %f s\n", TOTAL_SIMULATION_TIME, STEPS, DELTA_T);
+#ifdef OMP
+  printf("OpenMP parallel execution enabled!\n");
+#endif
+  printf("A system of %d particles will be simulated for %f s, subdivided in %d steps, each one corresponding to %f s\n", initial_nummber_of_particles, TOTAL_SIMULATION_TIME, STEPS, DELTA_T);
 #endif
 }

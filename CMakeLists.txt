@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 Project(cal_DEM)
 
-OPTION (GUI "GUI" ON)
+OPTION (GUI "GUI" OFF)
 OPTION (OMP "OpenMP" ON)
+OPTION (VERBOSE "verbose mode" OFF)
+
 if(OMP)
     add_definitions(-DOMP=ON)
     find_package(OpenCAL 1.0 COMPONENTS  OpenCAL-OMP REQUIRED)
@@ -17,7 +19,6 @@ else()
     find_package(OpenCAL 1.0 COMPONENTS  OpenCAL  REQUIRED)
 endif()
 
-OPTION (VERBOSE "verbose mode" OFF)
 if(VERBOSE)
     add_definitions(-DVERBOSE=ON)
 endif()
