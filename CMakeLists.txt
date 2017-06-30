@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 Project(cal_DEM)
 
-OPTION (GUI "GUI" OFF)
+OPTION (GUI "GUI" ON)
 OPTION (OMP "OpenMP" ON)
-OPTION (VERBOSE "verbose mode" OFF)
+OPTION (VERBOSE "verbose mode" ON)
 
 if(OMP)
     add_definitions(-DOMP=ON)

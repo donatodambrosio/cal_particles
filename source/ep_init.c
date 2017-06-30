@@ -48,7 +48,7 @@ void mmiscali_nta_cella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_
 */
   //if (cell_x < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER)
   //if (cell_y < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER)
-  if (cell_z < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER_ID)
+  if (cell_z > TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER_ID)
   //if (cell_x < TOP_LAYERS || cell_y < TOP_LAYERS || cell_z < TOP_LAYERS || calGet3Di(ca, Q.ID[0],cell_x,cell_y,cell_z) == BORDER)
     return;
 

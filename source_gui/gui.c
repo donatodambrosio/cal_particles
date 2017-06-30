@@ -170,7 +170,8 @@ void simulationRun(void)
 #ifdef VERBOSE
   //graphic rendering
   printf("step: %d; \tactive cells: %d\r", a_simulazioni->step, a_simulazioni->ca3D->A.size_current);
-  glutPostRedisplay();
+  if (a_simulazioni->step % 100 == 0)
+    glutPostRedisplay();
 #endif
 
   //check for the stop condition
