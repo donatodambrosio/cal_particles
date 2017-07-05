@@ -94,6 +94,6 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
 
 void boundary_cells(struct CALModel3D* ca, int x_cell, int y_cell, int z_cell)
 {
-  if (x_cell==0 || x_cell==X_CELLS-1 || y_cell==0 || y_cell==Y_CELLS-1 || z_cell==0 || z_cell==Z_CELLS-1)
+  if (x_cell==0 || x_cell==X_CELLS-1 || y_cell==0 || y_cell==Y_CELLS-1 || (z_cell==0 && (x_cell < 5 || x_cell > 14)) || z_cell==Z_CELLS-1)
     mb(ca,&Q,x_cell,y_cell,z_cell);
 }

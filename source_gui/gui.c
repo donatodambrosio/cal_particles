@@ -21,6 +21,7 @@ struct ModelView{
   GLfloat y_rot;
   GLfloat z_trans;
 };
+GLfloat delta_z_trans;
 
 struct ModelView model_view;
 time_t start_time, end_time;
@@ -55,12 +56,12 @@ void drawParticles()
   // Box
   glColor3f(1,1,1);
   glPushMatrix();
-  float scale_x = X_CELLS-2;
-  float scale_y = Y_CELLS-2;
-  float scale_z = Z_CELLS-2;
 
-  particle_radius *= scale_x*scale_y*scale_z;
+  float scale_x = X-2*CELL_SIDE;
+  float scale_y = Y-2*CELL_SIDE;
+  float scale_z = Z-2*CELL_SIDE;
 
+  glPushMatrix();
   glScalef(scale_x,scale_y,scale_z);
   glPushAttrib(GL_LIGHTING_BIT);
   glDisable(GL_LIGHTING);
@@ -78,17 +79,18 @@ void drawParticles()
             for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
               if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
                 {
-                  px = calGet3Dr(u_modellu,Q.px[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
-                  py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
-                  pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z) / CELL_SIDE;
 
-                  /*                  if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == 614)
+                  px = calGet3Dr(u_modellu,Q.px[slot],cell_x,cell_y,cell_z);
+                  py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z);
+                  pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z);
+
+                  /* if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == 614)
                     glColor3f(1,0,0);
                   else
                     glColor3f(0,1,0);
-*/
+                  */
                   glPushMatrix();
-                  glTranslatef(-X_CELLS/2, -Y_CELLS/2 , -Z_CELLS/2);
+                  glTranslatef(-X/2, -Y/2 , -Z/2);
                   glTranslated(px,py,pz);
                   glutSolidSphere(particle_radius,10,10);
                   //glutWireSphere(particle_radius,20,20);
@@ -102,18 +104,23 @@ void display(void)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // particles
-  GLfloat	 lightPos[]	= { 0.0f, 0.0f, 100.0f, 1.0f };
-  int MAX = u_modellu->rows;
+  GLfloat lightPos[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+  float MAX = X;
 
-  if (MAX < u_modellu->columns)
-    MAX = u_modellu->columns;
-  if (MAX < u_modellu->slices)
-    MAX = u_modellu->slices;
+  if (MAX < Y)
+    MAX = Y;
+  if (MAX < Z)
+    MAX = Z;
+
+  lightPos[2] = 10*MAX;
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+  delta_z_trans = MAX/10.0;
 
   glViewport (0, 0, (GLsizei)wp.w, (GLsizei)wp.h);
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity ();
-  gluPerspective(45.0, (GLfloat) wp.w/(GLfloat) wp.h, 1.0, 4*MAX);
+  gluPerspective(45.0, (GLfloat) wp.w/(GLfloat) wp.h, 0.00001, 10*MAX);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt (0.0, 0.0, 2*MAX, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
@@ -134,8 +141,8 @@ void display(void)
   glLoadIdentity();
   gluLookAt (0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-  lightPos[2] = 2*MAX;
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+//  lightPos[2] = 2*MAX;
+//  glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
   glPushMatrix();
   glPushAttrib(GL_LIGHTING_BIT);
@@ -269,7 +276,7 @@ void keyboard(unsigned char key, int x, int y)
 void specialKeys(int key, int x, int y){
 
   //GLubyte specialKey = glutGetModifiers();
-  const GLfloat x_rot = 1.0, y_rot = 1.0, z_trans = 1.0;
+  const GLfloat x_rot = 1.0, y_rot = 1.0; //, z_trans = 1.0;
 
   if (key==GLUT_KEY_F9)
     mouse(GLUT_LEFT_BUTTON, GLUT_DOWN, x, y);
@@ -287,10 +294,10 @@ void specialKeys(int key, int x, int y){
       model_view.y_rot += y_rot;
     }
   if(key == GLUT_KEY_PAGE_UP){
-      model_view.z_trans += z_trans;
+      model_view.z_trans += delta_z_trans;
     }
   if(key == GLUT_KEY_PAGE_DOWN){
-      model_view.z_trans -= z_trans;
+      model_view.z_trans -= delta_z_trans;
     }
 
   glutPostRedisplay();

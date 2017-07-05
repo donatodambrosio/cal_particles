@@ -23,8 +23,8 @@
 
 // Particle mass, radius and volume
 #define PI 3.14159265358979
-#define PARTICLE_MASS 0.001
-#define PARTICLE_RADIUS 0.00015
+#define PARTICLE_MASS 1.0471975511966E-06 // -> density = 2000
+#define PARTICLE_RADIUS 0.0005
 #define PARTICLE_VOLUME ((4.0/3.0)*PI*PARTICLE_RADIUS*PARTICLE_RADIUS*PARTICLE_RADIUS)
 
 // Cell side [m], volume [m^3] and max occupancy volume [m^3] according to Kepler's conjecture
@@ -42,20 +42,20 @@
 #define DEFAULT_PARTICLE_ID 1   // DEFAULT PARTICLE ID
 
 // Domain dimensions in m and in cells along x, y and z directions
-#define X 0.02
-#define Y 0.02
-#define Z 0.02
+#define X 0.04
+#define Y 0.04
+#define Z 0.06
 #define X_CELLS (int)((X)/(CELL_SIDE))
 #define Y_CELLS (int)((Y)/(CELL_SIDE))
 #define Z_CELLS (int)((Z)/(CELL_SIDE))
 
 // Particles are randomly distributed on the CELL_FILL_RATE*MAX_NUMBER_OF_PARTICLES_PER_CELL top layers
-#define TOP_LAYERS      (Z_CELLS) - 0.6 * (Z_CELLS)
-#define CELL_FILL_RATE  0.75 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
+#define TOP_LAYERS      (Z_CELLS) - 0.8 * (Z_CELLS)
+#define CELL_FILL_RATE  0.1 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 // PHYSICAL TIME AND COMPUTATIONAL STEPS
 #define TOTAL_SIMULATION_TIME 0.1 //[s]
-#define DELTA_T (0.01 * sqrt(PARTICLE_MASS/KN)) //[s]
+#define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN)) //[s]
 #define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
 #define INTEGRITY_CHECK_STEPS STEPS
 
