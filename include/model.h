@@ -19,7 +19,7 @@
 #define GRAVITY
 #define G 9.81
 #define VISCOELASTIC
-#define ETHA 0.01
+#define ETHA 0.0015
 
 // Particle mass, radius and volume
 #define PI 3.14159265358979
@@ -44,17 +44,17 @@
 // Domain dimensions in m and in cells along x, y and z directions
 #define X 0.04
 #define Y 0.04
-#define Z 0.06
+#define Z 0.1
 #define X_CELLS (int)((X)/(CELL_SIDE))
 #define Y_CELLS (int)((Y)/(CELL_SIDE))
 #define Z_CELLS (int)((Z)/(CELL_SIDE))
 
 // Particles are randomly distributed on the CELL_FILL_RATE*MAX_NUMBER_OF_PARTICLES_PER_CELL top layers
 #define TOP_LAYERS      (Z_CELLS) - 0.8 * (Z_CELLS)
-#define CELL_FILL_RATE  0.1 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
+#define CELL_FILL_RATE  0.75 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 // PHYSICAL TIME AND COMPUTATIONAL STEPS
-#define TOTAL_SIMULATION_TIME 0.1 //[s]
+#define TOTAL_SIMULATION_TIME 1.0 //0.1 //[s]
 #define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN)) //[s]
 #define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
 #define INTEGRITY_CHECK_STEPS STEPS
