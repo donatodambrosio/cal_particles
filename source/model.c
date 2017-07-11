@@ -1,13 +1,13 @@
-#include <ep_boundary.h>
+#include <boundary.h>
 #include <ep_collision.h>
-#include <ep_init.h>
 #include <ep_movili.h>
 #include <ep_movili_cazzu.h>
 #include <ep_physics.h>
 #include <ep_utils.h>
+#include <init.h>
+#include <model.h>
 #include <utils_io.h>
 #include <sim_stop.h>
-#include <model.h>
 #include <stdlib.h>
 
 struct CALModel3D* u_modellu;
@@ -53,7 +53,6 @@ void transizioniGlobali(struct CALModel3D* modello)
 
   calApplyElementaryProcess3D(modello,inner_collision);
   calApplyElementaryProcess3D(modello,outer_collision);
-  calApplyElementaryProcess3D(modello,boundary_collision);
   updateF(modello);
 
   calApplyElementaryProcess3D(modello,movili);
@@ -123,12 +122,11 @@ void partilu()
     }
 
   // Boundary
-  calApplyElementaryProcess3D(u_modellu, boundary_cells);
+  boundaryCellsSerial(u_modellu);
 
   // Initial conditions
   initial_nummber_of_particles = 0;
   elapsed_time = 0.0;
-  //calApplyElementaryProcess3D(u_modellu, mmiscali_nta_cella);
   mmiscali_nta_cella_seriale(u_modellu);
   cancella_particelle_in_urto(u_modellu);
 

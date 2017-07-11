@@ -15,7 +15,7 @@
 #include <math.h>
 
 // PHYSICAL CONSTANTS AND FLAGS
-#define KN 10000//50000
+#define KN 100//50000
 #define GRAVITY
 #define G 9.81
 #define VISCOELASTIC
@@ -23,7 +23,7 @@
 
 // Particle mass, radius and volume
 #define PI 3.14159265358979
-#define PARTICLE_MASS 1.0471975511966E-06 // -> density = 2000
+#define PARTICLE_MASS 0.0001 //1.0471975511966E-06 // -> density = 2000
 #define PARTICLE_RADIUS 0.0005
 #define PARTICLE_VOLUME ((4.0/3.0)*PI*PARTICLE_RADIUS*PARTICLE_RADIUS*PARTICLE_RADIUS)
 
@@ -44,7 +44,7 @@
 // Domain dimensions in m and in cells along x, y and z directions
 #define X 0.04
 #define Y 0.04
-#define Z 0.1
+#define Z 0.04
 #define X_CELLS (int)((X)/(CELL_SIDE))
 #define Y_CELLS (int)((Y)/(CELL_SIDE))
 #define Z_CELLS (int)((Z)/(CELL_SIDE))

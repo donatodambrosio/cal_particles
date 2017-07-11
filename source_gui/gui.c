@@ -57,9 +57,9 @@ void drawParticles()
   glColor3f(1,1,1);
   glPushMatrix();
 
-  float scale_x = X-2*CELL_SIDE;
-  float scale_y = Y-2*CELL_SIDE;
-  float scale_z = Z-2*CELL_SIDE;
+  float scale_x = X;
+  float scale_y = Y;
+  float scale_z = Z;
 
   glPushMatrix();
   glScalef(scale_x,scale_y,scale_z);
@@ -70,32 +70,48 @@ void drawParticles()
   glPopMatrix();
 
   // Particles
-  glColor3f(1,0,0);
+  //glColor3f(1,0,0);
   for (cell_x=0; cell_x<X_CELLS; cell_x++)
     for (cell_y=0; cell_y<Y_CELLS; cell_y++)
       for (cell_z=0; cell_z<Z_CELLS; cell_z++)
-        if (calGet3Di(u_modellu,Q.ID[0],cell_x,cell_y,cell_z) != BORDER_ID)
+        //if (calGet3Di(u_modellu,Q.ID[0],cell_x,cell_y,cell_z) != NULL_ID)
           {
             for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
-              if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
-                {
+              {
+                if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == NULL_ID)
+                  continue;
 
-                  px = calGet3Dr(u_modellu,Q.px[slot],cell_x,cell_y,cell_z);
-                  py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z);
-                  pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z);
+                px = calGet3Dr(u_modellu,Q.px[slot],cell_x,cell_y,cell_z);
+                py = calGet3Dr(u_modellu,Q.py[slot],cell_x,cell_y,cell_z);
+                pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z);
 
-                  /* if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == 614)
+                glPushMatrix();
+                glTranslatef(-X/2, -Y/2 , -Z/2);
+                glTranslated(px,py,pz);
+
+                if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
+                  {
                     glColor3f(1,0,0);
+                    glutSolidSphere(particle_radius,10,10);
+                  }
+                else
+                  if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == BORDER_ID)
+                    {
+                      glColor3f(1,1,1);
+                      glPointSize(4);
+                      glBegin(GL_POINTS);
+                      glVertex3f(0,0,0);
+                      glEnd();
+                    }
                   else
-                    glColor3f(0,1,0);
-                  */
-                  glPushMatrix();
-                  glTranslatef(-X/2, -Y/2 , -Z/2);
-                  glTranslated(px,py,pz);
-                  glutSolidSphere(particle_radius,10,10);
-                  //glutWireSphere(particle_radius,20,20);
-                  glPopMatrix();
-                }
+                    {
+                      glColor3f(0,1,0);
+                      glutSolidSphere(particle_radius,10,10);
+                    }
+
+                glPopMatrix();
+
+              }
           }
 }
 
@@ -177,7 +193,7 @@ void simulationRun(void)
 #ifdef VERBOSE
   //graphic rendering
   printf("step: %d; \tactive cells: %d\r", a_simulazioni->step, a_simulazioni->ca3D->A.size_current);
-  if (a_simulazioni->step % 100 == 0)
+  //if (a_simulazioni->step % 100 == 0)
     glutPostRedisplay();
 #endif
 
