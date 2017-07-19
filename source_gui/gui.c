@@ -3,6 +3,7 @@
 #else
 #include <GL/glut.h>
 #endif
+#include <h5part_io.h>
 #include <model.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -322,6 +323,9 @@ void specialKeys(int key, int x, int y){
 int main(int argc, char** argv)
 {
   partilu();
+
+  test_h5part();
+  read_test_h5part();
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
