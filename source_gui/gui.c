@@ -57,9 +57,9 @@ void drawParticles()
   glColor3f(1,1,1);
   glPushMatrix();
 
-  float scale_x = X;
-  float scale_y = Y;
-  float scale_z = Z;
+  float scale_x = X_SIZE;
+  float scale_y = Y_SIZE;
+  float scale_z = Z_SIZE;
 
   glPushMatrix();
   glScalef(scale_x,scale_y,scale_z);
@@ -86,7 +86,7 @@ void drawParticles()
                 pz = calGet3Dr(u_modellu,Q.pz[slot],cell_x,cell_y,cell_z);
 
                 glPushMatrix();
-                glTranslatef(-X/2, -Y/2 , -Z/2);
+                glTranslatef(-X_SIZE/2, -Y_SIZE/2 , -Z_SIZE/2);
                 glTranslated(px,py,pz);
 
                 if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
@@ -121,12 +121,12 @@ void display(void)
 
   // particles
   GLfloat lightPos[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  float MAX = X;
+  float MAX = X_SIZE;
 
-  if (MAX < Y)
-    MAX = Y;
-  if (MAX < Z)
-    MAX = Z;
+  if (MAX < Y_SIZE)
+    MAX = Y_SIZE;
+  if (MAX < Z_SIZE)
+    MAX = Z_SIZE;
 
   lightPos[2] = 10*MAX;
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -177,11 +177,9 @@ CALbyte simulationStep()
 {
   CALbyte again;
 
-  //exectutes the global transition function, the steering function and check for the stop condition.
-  again = calRunCAStep3D(a_simulazioni);
-
-  //simulation main loop
-  a_simulazioni->step++;
+  //exectutes the global transition function, and check for the stop condition.
+  again = runCAStep3D(u_modellu);
+  step++;
 
   return again;
 }
@@ -192,8 +190,7 @@ void simulationRun(void)
 
 #ifdef VERBOSE
   //graphic rendering
-  printf("step: %d; \tactive cells: %d\r", a_simulazioni->step, a_simulazioni->ca3D->A.size_current);
-  //if (a_simulazioni->step % 100 == 0)
+  //if (step % 100 == 0)
     glutPostRedisplay();
 #endif
 
@@ -208,7 +205,6 @@ void simulationRun(void)
       printf("Elapsed time: %lds\n", end_time - start_time);
 
       //graphic rendering
-      printf("step: %d; \tactive cells: %d\r", a_simulazioni->step, a_simulazioni->ca3D->A.size_current);
       glutPostRedisplay();
       return;
     }
@@ -216,7 +212,7 @@ void simulationRun(void)
   char winwow_title[256];
   char steps_cstr[64];
   strcpy(winwow_title, "cal_DEM - step ");
-  sprintf(steps_cstr, "%d (of %d), elapsed_time %.3f s (of %f s)", a_simulazioni->step, STEPS, elapsed_time, TOTAL_SIMULATION_TIME);
+  sprintf(steps_cstr, "%d (of %d), elapsed_time %.3f s (of %f s)", step, STEPS, elapsed_time, TOTAL_SIMULATION_TIME);
   strcat(winwow_title, steps_cstr);
   glutSetWindowTitle(winwow_title);
 }

@@ -11,10 +11,12 @@ CALbyte simulationStep()
   CALbyte again;
 
   //exectutes the global transition function, the steering function and check for the stop condition.
-  again = calRunCAStep3D(a_simulazioni);
+  //again = calRunCAStep3D(a_simulazioni);
+  again = runCAStep3D(u_modellu);
 
   //simulation main loop
-  a_simulazioni->step++;
+  //a_simulazioni->step++;
+  step++;
 
   return again;
 }
@@ -35,7 +37,7 @@ int main(int argc, char** argv)
   printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
 #endif
 
-  saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, t0_path);
+  saveParticles(u_modellu, step, elapsed_time, time_spent, t0_path);
 
 #ifdef OMP
   double begin, end;
@@ -59,7 +61,7 @@ int main(int argc, char** argv)
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 #endif
 
-  saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, tf_path);
+  saveParticles(u_modellu, step, elapsed_time, time_spent, tf_path);
 
   return 0;
 }

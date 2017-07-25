@@ -1,15 +1,6 @@
 #include <ep_utils.h>
 #include <math.h>
 
-CALbyte ncestiArmenuNaParticella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
-{
-  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-    if (calGetX3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z,n) > NULL_ID)
-      return CAL_TRUE;
-
-  return CAL_FALSE;
-}
-
 CALreal distance (CALreal* p0, CALreal* p1)
 {
   return sqrt((p0[0]-p1[0])*(p0[0]-p1[0]) +
@@ -27,12 +18,12 @@ CALreal scalar(CALreal *v, CALreal *n)
   return v[0]*n[0]+v[1]*n[1]+v[2]*n[2];
 }
 
-void reflect(CALreal *v, CALreal *n)
-{
-  CALreal s = scalar(v, n);
-  for (int i=0; i<3; i++)
-    v[i] = v[i] - 2*s*n[i];
-}
+//void reflect(CALreal *v, CALreal *n)
+//{
+//  CALreal s = scalar(v, n);
+//  for (int i=0; i<3; i++)
+//    v[i] = v[i] - 2*s*n[i];
+//}
 
 void orthogonalProjectedPointToPlane(CALreal* Pi, CALreal* Pp, CALreal* n, CALreal* Pj)
 {

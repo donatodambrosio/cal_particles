@@ -6,11 +6,13 @@
 #include <OpenCAL-OMP/cal3DRun.h>
 #include <OpenCAL-OMP/cal3DIO.h>
 #include <OpenCAL-OMP/cal3DUnsafe.h>
+#include <OpenCAL-OMP/cal3DBuffer.h>
 #else
 #include <OpenCAL/cal3D.h>
 #include <OpenCAL/cal3DRun.h>
 #include <OpenCAL/cal3DIO.h>
 #include <OpenCAL/cal3DUnsafe.h>
+#include <OpenCAL/cal3DBuffer.h>
 #endif
 #include <math.h>
 
@@ -42,12 +44,12 @@
 #define DEFAULT_PARTICLE_ID 1   // DEFAULT PARTICLE ID
 
 // Domain dimensions in m and in cells along x, y and z directions
-#define X 0.04
-#define Y 0.04
-#define Z 0.04
-#define X_CELLS (int)((X)/(CELL_SIDE))
-#define Y_CELLS (int)((Y)/(CELL_SIDE))
-#define Z_CELLS (int)((Z)/(CELL_SIDE))
+#define X_SIZE 0.04
+#define Y_SIZE 0.04
+#define Z_SIZE 0.04
+#define X_CELLS (int)((X_SIZE)/(CELL_SIDE))
+#define Y_CELLS (int)((Y_SIZE)/(CELL_SIDE))
+#define Z_CELLS (int)((Z_SIZE)/(CELL_SIDE))
 
 // Particles are randomly distributed on the CELL_FILL_RATE*MAX_NUMBER_OF_PARTICLES_PER_CELL top layers
 #define TOP_LAYERS      (Z_CELLS) - 0.8 * (Z_CELLS)
@@ -73,15 +75,39 @@ struct Substates
   struct CALSubstate3Dr **vz;
   struct CALSubstate3Di **ID;
 };
+extern CALreal** Q_Fx_current;
+extern CALreal** Q_Fx_next;
+extern CALreal** Q_Fy_current;
+extern CALreal** Q_Fy_next;
+extern CALreal** Q_Fz_current;
+extern CALreal** Q_Fz_next;
+extern CALreal** Q_px_current;
+extern CALreal** Q_px_next;
+extern CALreal** Q_py_current;
+extern CALreal** Q_py_next;
+extern CALreal** Q_pz_current;
+extern CALreal** Q_pz_next;
+extern CALreal** Q_vx_current;
+extern CALreal** Q_vx_next;
+extern CALreal** Q_vy_current;
+extern CALreal** Q_vy_next;
+extern CALreal** Q_vz_current;
+extern CALreal** Q_vz_next;
+extern CALint** Q_ID_current;
+extern CALint** Q_ID_next;
 
 // Main objcts
 extern struct CALModel3D* u_modellu;
 extern struct Substates Q;
-extern struct CALRun3D* a_simulazioni;
+extern CALint* Xi;
+extern CALint* Xj;
+extern CALint* Xk;
+extern CALint step;
 extern CALint initial_nummber_of_particles;
 extern CALreal elapsed_time;
 
 // Functions
 void partilu();
+CALbyte runCAStep3D(struct CALModel3D* modello);
 
 #endif /* MODEL_H */
