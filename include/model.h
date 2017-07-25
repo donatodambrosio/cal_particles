@@ -76,7 +76,7 @@ struct Substates
   struct CALSubstate3Dr **vz;
   struct CALSubstate3Di **ID;
 };
-extern CALreal** Q_Fx_current;
+/*extern CALreal** Q_Fx_current;
 extern CALreal** Q_Fx_next;
 extern CALreal** Q_Fy_current;
 extern CALreal** Q_Fy_next;
@@ -96,7 +96,7 @@ extern CALreal** Q_vz_current;
 extern CALreal** Q_vz_next;
 extern CALint** Q_ID_current;
 extern CALint** Q_ID_next;
-
+*/
 #define REAL_SUBSTATES_NUMBER 9
 #define FX 0
 #define FY 1

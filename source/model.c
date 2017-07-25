@@ -12,6 +12,7 @@
 
 struct CALModel3D* u_modellu;
 struct Substates Q;
+/*
 CALreal** Q_Fx_current;
 CALreal** Q_Fx_next;
 CALreal** Q_Fy_current;
@@ -32,7 +33,7 @@ CALreal** Q_vz_current;
 CALreal** Q_vz_next;
 CALint** Q_ID_current;
 CALint** Q_ID_next;
-
+*/
 CALreal* Q_current = NULL;
 CALreal* Q_next = NULL;
 CALint* ID_current = NULL;
@@ -50,57 +51,63 @@ CALreal elapsed_time;
 
 void mapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_current_OUT, CALint* intSubstate_current_OUT) {
 
-  int ssNum_r = model->sizeof_pQr_array;
-  int ssNum_i = model->sizeof_pQi_array;
-  size_t elNum = MAX_NUMBER_OF_PARTICLES_PER_CELL * model->columns * model->rows * model->slices;
+  int ssNum_r = REAL_SUBSTATES_NUMBER;
+  int ssNum_i = INT_SUBSTATES_NUMBER;
+  size_t elNum = model->columns * model->rows * model->slices;
 
   long int outIndex = 0;
   int i;
   unsigned int j;
 
-  for (i = 0; i < ssNum_r; i++) {
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (i = 0; i < ssNum_r; i++) {
       for (j = 0; j < elNum; j++)
-        model->pQr_array[i]->current[j] = realSubstate_current_OUT[outIndex++];
+        model->pQr_array[slot*ssNum_r+i]->current[j] = realSubstate_current_OUT[outIndex++];
     }
 
   outIndex = 0;
 
-  for (i = 0; i < ssNum_i; i++) {
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (i = 0; i < ssNum_i; i++) {
       for (j = 0; j < elNum; j++)
-        model->pQi_array[i]->current[j] = intSubstate_current_OUT[outIndex++];
+        model->pQi_array[slot*ssNum_i+i]->current[j] = intSubstate_current_OUT[outIndex++];
     }
 }
 
 void realSubstatesMapper3D(struct CALModel3D *model, CALreal * current, CALreal * next) {
-  int ssNum = model->sizeof_pQr_array;
-  size_t elNum = MAX_NUMBER_OF_PARTICLES_PER_CELL * model->columns * model->rows * model->slices;
+  //int ssNum = model->sizeof_pQr_array;
+  int ssNum = REAL_SUBSTATES_NUMBER;
+  size_t elNum = model->columns * model->rows * model->slices;
   long int outIndex = 0;
   long int outIndex1 = 0;
   int i;
   unsigned int j;
 
-  for (i = 0; i < ssNum; i++) {
-      for (j = 0; j < elNum; j++)
-        current[outIndex++] = model->pQr_array[i]->current[j];
-      for (j = 0; j < elNum; j++)
-        next[outIndex1++] = model->pQr_array[i]->next[j];
-    }
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (i = 0; i < ssNum; i++) {
+        for (j = 0; j < elNum; j++)
+          current[outIndex++] = model->pQr_array[slot*ssNum+i]->current[j];
+        for (j = 0; j < elNum; j++)
+          next[outIndex1++] = model->pQr_array[slot*ssNum+i]->next[j];
+      }
 }
 
 void intSubstatesMapper3D(struct CALModel3D *model, CALint * current, CALint * next) {
-  int ssNum = model->sizeof_pQi_array;
-  size_t elNum = MAX_NUMBER_OF_PARTICLES_PER_CELL * model->columns * model->rows * model->slices;
-  long int outIndex = 0;
+  //int ssNum = model->sizeof_pQi_array;
+  int ssNum = INT_SUBSTATES_NUMBER;
+  size_t elNum = model->columns * model->rows * model->slices;
+  long int outIndex = 0;\
   long int outIndex1 = 0;
   int i;
   unsigned int j;
 
-  for (i = 0; i < ssNum; i++) {
-      for (j = 0; j < elNum; j++)
-        current[outIndex++] = model->pQi_array[i]->current[j];
-      for (j = 0; j < elNum; j++)
-        next[outIndex1++] = model->pQi_array[i]->next[j];
-    }
+  for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (i = 0; i < ssNum; i++) {
+        for (j = 0; j < elNum; j++)
+          current[outIndex++] = model->pQi_array[slot*ssNum+i]->current[j];
+        for (j = 0; j < elNum; j++)
+          next[outIndex1++] = model->pQi_array[slot*ssNum+i]->next[j];
+      }
 }
 
 
@@ -254,6 +261,7 @@ void partilu()
       calInitSubstate3Di(u_modellu,Q.ID[slot],NULL_ID);
     }
 
+/*
   Q_Fx_current = (CALreal**)malloc(sizeof(CALreal*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q_Fx_next    = (CALreal**)malloc(sizeof(CALreal*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   Q_Fy_current = (CALreal**)malloc(sizeof(CALreal*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
@@ -298,11 +306,7 @@ void partilu()
       Q_ID_current[slot] = Q.ID[slot]->current;
       Q_ID_next[slot]    = Q.ID[slot]->next;
     }
-
-  Q_current = (CALreal*)malloc(sizeof(CALreal)*REAL_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-  Q_next = (CALreal*)malloc(sizeof(CALreal)*REAL_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-  ID_current = (CALint*)malloc(sizeof(CALint)*INT_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-  ID_next = (CALint*)malloc(sizeof(CALint)*INT_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+*/
 
   // Boundary
   boundaryCellsSerial(u_modellu);
@@ -315,6 +319,15 @@ void partilu()
 
   // Simulation step
   step = 1;
+
+  int size = SIZE;
+
+  // Linearized substates
+  Q_current  = (CALreal*)malloc(sizeof(CALreal)*REAL_SUBSTATES_NUMBER*SIZE*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  Q_next     = (CALreal*)malloc(sizeof(CALreal)*REAL_SUBSTATES_NUMBER*SIZE*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  ID_current = (CALint*)malloc(sizeof(CALint)  *INT_SUBSTATES_NUMBER *SIZE*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  ID_next    = (CALint*)malloc(sizeof(CALint)  *INT_SUBSTATES_NUMBER *SIZE*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+
   realSubstatesMapper3D(u_modellu, Q_current, Q_next);
   intSubstatesMapper3D(u_modellu, ID_current, ID_next);
 

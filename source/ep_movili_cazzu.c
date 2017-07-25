@@ -145,7 +145,8 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
               CALbyte sucked = CAL_FALSE;
               int destination_slot;
               for (destination_slot = 0; destination_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
-                if (calGetNext3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z) == NULL_ID)
+                //if (calGetNext3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z) == NULL_ID)
+                if (calGetBuffer3DElement(INT_SUBSTATE(ID_next, destination_slot, PID),X_CELLS,Y_CELLS,cell_x,cell_y,cell_z) == NULL_ID)
                   {
                     sucala(destination_slot,source_slot,ca,cell_x,cell_y,cell_z,n);
                     sucked = CAL_TRUE;

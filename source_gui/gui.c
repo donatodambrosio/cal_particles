@@ -179,6 +179,7 @@ CALbyte simulationStep()
 
   //exectutes the global transition function, and check for the stop condition.
   again = runCAStep3D(u_modellu);
+  mapperToSubstates3D(u_modellu, Q_current, ID_current);
   step++;
 
   return again;
