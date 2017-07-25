@@ -32,6 +32,12 @@ CALreal** Q_vz_current;
 CALreal** Q_vz_next;
 CALint** Q_ID_current;
 CALint** Q_ID_next;
+
+CALreal* Q_current = NULL;
+CALreal* Q_next = NULL;
+CALint* ID_current = NULL;
+CALint* ID_next = NULL;
+
 CALint* Xi = NULL;
 CALint* Xj = NULL;
 CALint* Xk = NULL;
@@ -39,13 +45,77 @@ CALint step;
 CALint initial_nummber_of_particles;
 CALreal elapsed_time;
 
+
+//------------------------------------------------------------------
+
+void mapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_current_OUT, CALint* intSubstate_current_OUT) {
+
+  int ssNum_r = model->sizeof_pQr_array;
+  int ssNum_i = model->sizeof_pQi_array;
+  size_t elNum = MAX_NUMBER_OF_PARTICLES_PER_CELL * model->columns * model->rows * model->slices;
+
+  long int outIndex = 0;
+  int i;
+  unsigned int j;
+
+  for (i = 0; i < ssNum_r; i++) {
+      for (j = 0; j < elNum; j++)
+        model->pQr_array[i]->current[j] = realSubstate_current_OUT[outIndex++];
+    }
+
+  outIndex = 0;
+
+  for (i = 0; i < ssNum_i; i++) {
+      for (j = 0; j < elNum; j++)
+        model->pQi_array[i]->current[j] = intSubstate_current_OUT[outIndex++];
+    }
+}
+
+void realSubstatesMapper3D(struct CALModel3D *model, CALreal * current, CALreal * next) {
+  int ssNum = model->sizeof_pQr_array;
+  size_t elNum = MAX_NUMBER_OF_PARTICLES_PER_CELL * model->columns * model->rows * model->slices;
+  long int outIndex = 0;
+  long int outIndex1 = 0;
+  int i;
+  unsigned int j;
+
+  for (i = 0; i < ssNum; i++) {
+      for (j = 0; j < elNum; j++)
+        current[outIndex++] = model->pQr_array[i]->current[j];
+      for (j = 0; j < elNum; j++)
+        next[outIndex1++] = model->pQr_array[i]->next[j];
+    }
+}
+
+void intSubstatesMapper3D(struct CALModel3D *model, CALint * current, CALint * next) {
+  int ssNum = model->sizeof_pQi_array;
+  size_t elNum = MAX_NUMBER_OF_PARTICLES_PER_CELL * model->columns * model->rows * model->slices;
+  long int outIndex = 0;
+  long int outIndex1 = 0;
+  int i;
+  unsigned int j;
+
+  for (i = 0; i < ssNum; i++) {
+      for (j = 0; j < elNum; j++)
+        current[outIndex++] = model->pQi_array[i]->current[j];
+      for (j = 0; j < elNum; j++)
+        next[outIndex1++] = model->pQi_array[i]->next[j];
+    }
+}
+
+
+//------------------------------------------------------------------
+
 void updateF()
 {
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
-      calCopyBuffer3Dr(Q_Fx_next[slot],Q_Fx_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
-      calCopyBuffer3Dr(Q_Fy_next[slot],Q_Fy_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
-      calCopyBuffer3Dr(Q_Fz_next[slot],Q_Fz_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_Fx_next[slot],Q_Fx_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_Fy_next[slot],Q_Fy_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_Fz_next[slot],Q_Fz_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,FX),REAL_SUBSTATE(Q_current,slot,FX), X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,FY),REAL_SUBSTATE(Q_current,slot,FY), X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,FZ),REAL_SUBSTATE(Q_current,slot,FZ), X_CELLS, Y_CELLS, Z_CELLS);
     }
 }
 
@@ -53,9 +123,12 @@ void updateP()
 {
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
-      calCopyBuffer3Dr(Q_px_next[slot],Q_px_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
-      calCopyBuffer3Dr(Q_py_next[slot],Q_py_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
-      calCopyBuffer3Dr(Q_pz_next[slot],Q_pz_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_px_next[slot],Q_px_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_py_next[slot],Q_py_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_pz_next[slot],Q_pz_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,PX),REAL_SUBSTATE(Q_current,slot,PX), X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,PY),REAL_SUBSTATE(Q_current,slot,PY), X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,PZ),REAL_SUBSTATE(Q_current,slot,PZ), X_CELLS, Y_CELLS, Z_CELLS);
     }
 }
 
@@ -63,16 +136,20 @@ void updateV()
 {
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
-      calCopyBuffer3Dr(Q_vx_next[slot],Q_vx_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
-      calCopyBuffer3Dr(Q_vy_next[slot],Q_vy_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
-      calCopyBuffer3Dr(Q_vz_next[slot],Q_vz_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_vx_next[slot],Q_vx_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_vy_next[slot],Q_vy_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Dr(Q_vz_next[slot],Q_vz_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,VX),REAL_SUBSTATE(Q_current,slot,VX), X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,VY),REAL_SUBSTATE(Q_current,slot,VY), X_CELLS, Y_CELLS, Z_CELLS);
+      calCopyBuffer3Dr(REAL_SUBSTATE(Q_next,slot,VZ),REAL_SUBSTATE(Q_current,slot,VZ), X_CELLS, Y_CELLS, Z_CELLS);
     }
 }
 
 void updateID()
 {
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-      calCopyBuffer3Di(Q_ID_next[slot],Q_ID_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+      //calCopyBuffer3Di(Q_ID_next[slot],Q_ID_current[slot], X_CELLS, Y_CELLS, Z_CELLS);
+    calCopyBuffer3Di(INT_SUBSTATE(ID_next,slot,PID),INT_SUBSTATE(ID_current,slot,PID), X_CELLS, Y_CELLS, Z_CELLS);
 }
 
 void transizioniGlobali(struct CALModel3D* modello)
@@ -222,6 +299,11 @@ void partilu()
       Q_ID_next[slot]    = Q.ID[slot]->next;
     }
 
+  Q_current = (CALreal*)malloc(sizeof(CALreal)*REAL_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  Q_next = (CALreal*)malloc(sizeof(CALreal)*REAL_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  ID_current = (CALint*)malloc(sizeof(CALint)*INT_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+  ID_next = (CALint*)malloc(sizeof(CALint)*INT_SUBSTATES_NUMBER*X_CELLS*Y_CELLS*Z_CELLS*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+
   // Boundary
   boundaryCellsSerial(u_modellu);
 
@@ -233,6 +315,8 @@ void partilu()
 
   // Simulation step
   step = 1;
+  realSubstatesMapper3D(u_modellu, Q_current, Q_next);
+  intSubstatesMapper3D(u_modellu, ID_current, ID_next);
 
   // allocate and build neighborhood arrays
   Xi = (CALint*)malloc(sizeof(CALint)*u_modellu->sizeof_X);

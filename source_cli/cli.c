@@ -61,6 +61,7 @@ int main(int argc, char** argv)
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 #endif
 
+  mapperToSubstates3D(u_modellu, Q_current, ID_current);
   saveParticles(u_modellu, step, elapsed_time, time_spent, tf_path);
 
   return 0;

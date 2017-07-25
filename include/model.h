@@ -50,6 +50,7 @@
 #define X_CELLS (int)((X_SIZE)/(CELL_SIDE))
 #define Y_CELLS (int)((Y_SIZE)/(CELL_SIDE))
 #define Z_CELLS (int)((Z_SIZE)/(CELL_SIDE))
+#define SIZE X_CELLS*Y_CELLS*Z_CELLS
 
 // Particles are randomly distributed on the CELL_FILL_RATE*MAX_NUMBER_OF_PARTICLES_PER_CELL top layers
 #define TOP_LAYERS      (Z_CELLS) - 0.8 * (Z_CELLS)
@@ -96,6 +97,25 @@ extern CALreal** Q_vz_next;
 extern CALint** Q_ID_current;
 extern CALint** Q_ID_next;
 
+#define REAL_SUBSTATES_NUMBER 9
+#define FX 0
+#define FY 1
+#define FZ 2
+#define PX 3
+#define PY 4
+#define PZ 5
+#define VX 6
+#define VY 7
+#define VZ 8
+#define INT_SUBSTATES_NUMBER 1
+#define PID 0
+extern CALreal* Q_current;
+extern CALreal* Q_next;
+extern CALint* ID_current;
+extern CALint* ID_next;
+#define REAL_SUBSTATE(S, slot, substate) ((S)+((slot)*(REAL_SUBSTATES_NUMBER*SIZE)+((substate)*(SIZE))))
+#define INT_SUBSTATE(S, slot, substate) ((S)+((slot)*(INT_SUBSTATES_NUMBER*SIZE)+((substate)*(SIZE))))
+
 // Main objcts
 extern struct CALModel3D* u_modellu;
 extern struct Substates Q;
@@ -109,5 +129,6 @@ extern CALreal elapsed_time;
 // Functions
 void partilu();
 CALbyte runCAStep3D(struct CALModel3D* modello);
+void mapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_current_OUT, CALint* intSubstate_current_OUT);
 
 #endif /* MODEL_H */
