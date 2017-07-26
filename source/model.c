@@ -49,6 +49,29 @@ CALreal elapsed_time;
 
 //------------------------------------------------------------------
 
+void defaultMapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_current_OUT, CALint* intSubstate_current_OUT) {
+
+	int ssNum_r = model->sizeof_pQr_array;
+	int ssNum_i = model->sizeof_pQi_array;
+	size_t elNum = model->columns * model->rows * model->slices;
+
+	long int outIndex = 0;
+	int i;
+	unsigned int j;
+
+	for (i = 0; i < ssNum_r; i++) {
+		for (j = 0; j < elNum; j++)
+			model->pQr_array[i]->current[j] = realSubstate_current_OUT[outIndex++];
+	}
+
+	outIndex = 0;
+
+	for (i = 0; i < ssNum_i; i++) {
+		for (j = 0; j < elNum; j++)
+			model->pQi_array[i]->current[j] = intSubstate_current_OUT[outIndex++];
+	}
+}
+
 void mapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_current_OUT, CALint* intSubstate_current_OUT) {
 
   int ssNum_r = REAL_SUBSTATES_NUMBER;
@@ -74,6 +97,22 @@ void mapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_curren
     }
 }
 
+void defaultRealSubstatesMapper3D(struct CALModel3D *model, CALreal * current, CALreal * next) {
+	int ssNum = model->sizeof_pQr_array;
+	size_t elNum = model->columns * model->rows * model->slices;
+	long int outIndex = 0;
+	long int outIndex1 = 0;
+	int i;
+	unsigned int j;
+
+	for (i = 0; i < ssNum; i++) {
+		for (j = 0; j < elNum; j++)
+			current[outIndex++] = model->pQr_array[i]->current[j];
+		for (j = 0; j < elNum; j++)
+			next[outIndex1++] = model->pQr_array[i]->next[j];
+	}
+}
+
 void realSubstatesMapper3D(struct CALModel3D *model, CALreal * current, CALreal * next) {
   //int ssNum = model->sizeof_pQr_array;
   int ssNum = REAL_SUBSTATES_NUMBER;
@@ -90,6 +129,22 @@ void realSubstatesMapper3D(struct CALModel3D *model, CALreal * current, CALreal 
         for (j = 0; j < elNum; j++)
           next[outIndex1++] = model->pQr_array[slot*ssNum+i]->next[j];
       }
+}
+
+void defaultIntSubstatesMapper3D(struct CALModel3D *model, CALint * current, CALint * next) {
+	int ssNum = model->sizeof_pQi_array;
+	size_t elNum = model->columns * model->rows * model->slices;
+	long int outIndex = 0;
+	long int outIndex1 = 0;
+	int i;
+	unsigned int j;
+
+	for (i = 0; i < ssNum; i++) {
+		for (j = 0; j < elNum; j++)
+			current[outIndex++] = model->pQi_array[i]->current[j];
+		for (j = 0; j < elNum; j++)
+			next[outIndex1++] = model->pQi_array[i]->next[j];
+	}
 }
 
 void intSubstatesMapper3D(struct CALModel3D *model, CALint * current, CALint * next) {
@@ -328,8 +383,10 @@ void partilu()
   ID_current = (CALint*)malloc(sizeof(CALint)  *INT_SUBSTATES_NUMBER *SIZE*MAX_NUMBER_OF_PARTICLES_PER_CELL);
   ID_next    = (CALint*)malloc(sizeof(CALint)  *INT_SUBSTATES_NUMBER *SIZE*MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
-  realSubstatesMapper3D(u_modellu, Q_current, Q_next);
-  intSubstatesMapper3D(u_modellu, ID_current, ID_next);
+  //realSubstatesMapper3D(u_modellu, Q_current, Q_next);
+  //intSubstatesMapper3D(u_modellu, ID_current, ID_next);
+  defaultRealSubstatesMapper3D(u_modellu, Q_current, Q_next);
+  defaultIntSubstatesMapper3D(u_modellu, ID_current, ID_next);
 
   // allocate and build neighborhood arrays
   Xi = (CALint*)malloc(sizeof(CALint)*u_modellu->sizeof_X);

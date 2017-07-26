@@ -4,7 +4,7 @@ Project(cal_DEM)
 
 OPTION (GUI "GUI" OFF)
 OPTION (OMP "OpenMP" OFF)
-OPTION (VERBOSE "verbose mode" ON)
+OPTION (VERBOSE "verbose mode" OFF)
 
 if(OMP)
     add_definitions(-DOMP=ON)

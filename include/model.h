@@ -130,5 +130,6 @@ extern CALreal elapsed_time;
 void partilu();
 CALbyte runCAStep3D(struct CALModel3D* modello);
 void mapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_current_OUT, CALint* intSubstate_current_OUT);
+void defaultMapperToSubstates3D(struct CALModel3D *model, CALreal * realSubstate_current_OUT, CALint* intSubstate_current_OUT);
 
 #endif /* MODEL_H */
