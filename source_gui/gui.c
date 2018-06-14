@@ -54,7 +54,8 @@ void drawParticles()
   CALreal px, py, pz;
 
   // Box
-  glColor3f(1,1,1);
+  //glColor3f(1,1,1);
+  glColor3f(0.7,0.7,0.7);
   glPushMatrix();
 
   float scale_x = X;
@@ -233,7 +234,7 @@ void init(void)
   glEnable(GL_COLOR_MATERIAL);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-  glClearColor (0.0, 0.0, 0.0, 0.0);
+  glClearColor (1.0, 1.0, 1.0, 0.0);
   glShadeModel (GL_FLAT);
 
   glEnable (GL_DEPTH_TEST);

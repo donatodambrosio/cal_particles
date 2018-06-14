@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 Project(cal_DEM)
 
-OPTION (GUI "GUI" OFF)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} /usr/share/cmake/Modules)
+message(STATUS "CMAKE_MODULE_PATH=" ${CMAKE_MODULE_PATH})
+
+OPTION (GUI "GUI" ON)
 OPTION (OMP "OpenMP" OFF)
-OPTION (VERBOSE "verbose mode" OFF)
+OPTION (VERBOSE "verbose mode" ON)
 
 if(OMP)
     add_definitions(-DOMP=ON)
